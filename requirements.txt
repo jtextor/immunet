@@ -1,7 +1,5 @@
 numpy==1.19.1
 Pillow==7.1.2
-# TODO: remove requests
-requests==2.18.4
 scipy==1.5.0
 imagecodecs==2020.5.30
 tqdm==4.46.1

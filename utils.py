@@ -1,36 +1,28 @@
 import numpy as np
-import requests
 from scipy.ndimage.morphology import distance_transform_edt
-import json
 
 
 def rnd(i):
     return int(round(i))
 
 
-# TODO: remove
-def jget(url):
-    return json.loads(requests.get(url).content)
-
-
 def background(c):
-    return c['t'] not in ['T cell', 'B cell', 'Dendritic cell', 'NK cell', 'NKT cell']
+    return c["type"] not in ['T cell', 'B cell', 'Dendritic cell', 'NK cell', 'NKT cell']
 
 
 def phenotyped(c):
-    return (c['t'] in ['No cell', 'Other cell', 'Neural structure', 'Tumor cell', 'B cell']) or ('positivity' in c)
+    return (c["type"] in ['No cell', 'Other cell', 'Neural structure', 'Tumor cell', 'B cell']) or ('positivity' in c)
 
 
 def phenotype(c):
-    if c['t'] == "B cell":
+    if c["type"] == "B cell":
         return np.array([0, 0, 1, 0, 0])
-    if c['t'] in ["T cell", "Dendritic cell", "NK cell", "NKT cell"]:
+    if c["type"] in ["T cell", "Dendritic cell", "NK cell", "NKT cell"]:
         return (np.array(c['positivity'][1:6]) - 1) / 4.
     return np.array([0, 0, 0, 0, 0])
 
 
-# Rename to sth like extract labels
-def training_image(components, annotations, cell_radius=5):
+def extract_labels(components, annotations, cell_radius=5):
     h = components.shape[0]
     w = components.shape[1]
 
