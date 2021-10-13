@@ -28,11 +28,21 @@ window = 31
 cell_radius = 5
 max_examples_per_tile = 1000
 
-datasets_to_include = ["2020-01-27-phenotyping-paper-cytoagars"]
+datasets_to_include = [
+        "2020-01-27-phenotyping-paper-cytoagars",
+        "2020-01-27-phenotyping-paper-tonsils",
+        "2020-01-31-phenotyping-paper-bladder",
+        "2020-01-31-phenotyping-paper-melanoma",
+        "2020-01-31-phenotyping-paper-prostate",
+        "2020-02-12-phenotyping-paper-lung-bcell"]
+
 tile_cache_path = Path("tilecache")
 
+# Random seed is for extracting pixels from the training data
+np.random.seed( 123 )
+
 # TODO: extract data loading, making training data and training into separate functions
-tile_annotations = load_tile_annotations()
+tile_annotations = load_tile_annotations("training")
 
 # Filter out datasets
 if datasets_to_include is not None:
@@ -72,10 +82,6 @@ for tile in tqdm(tile_annotations):
 
     labels = extract_labels(components, tile.annotations, cell_radius)
     known_status = labels[:, :, 0] != -1
-
-    # TODO: remove?
-    # Includes some unknown pixels in training, more focus on edges this way
-    # known_status = uniform_filter( known_status, mode='constant' ) == 1
 
     # sharpen cell edges a little more
     labels[labels[:, :, 0] == 0] = -1
@@ -118,8 +124,6 @@ def generate_data_generator(generator, X, Y1, batchsize):
 
     while True:
         img, y = i.next()
-        #r = (np.random.random(img.shape) > 0.01).astype(np.float32)
-        #img = img * r
         for j in range(img.shape[0]):
             for k in range(img[j].shape[2]):
                 img[j,:,:,k] = img[j,:,:,k]*np.random.uniform(0.6,2) + np.random.uniform(-0.2,0.2)
@@ -136,8 +140,3 @@ Mt.fit(
     steps_per_epoch=len(examples)//64,
     epochs=epochs,
     callbacks=[checkpoint])
-
-
-
-
-

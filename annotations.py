@@ -89,6 +89,8 @@ class Tile:
 
 
 def load_tile_annotations(type=AnnotationType.training):
+    if type not in [AnnotationType.training, AnnotationType.validation]:
+        raise ValueError("Unknown annotation type: "+str(type))
     annotations_path = Path("data") / (ANNOT_TRAIN_FILE if type == AnnotationType.training else ANNOT_VAL_FILE)
 
     with open(annotations_path) as f:
