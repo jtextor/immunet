@@ -21,7 +21,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import tifffile
 
-from utils import training_image
+from utils import training_image, jget
 
 from pathlib import Path
 from PIL import Image
@@ -41,18 +41,14 @@ radius_magnify = 5
 max_examples_per_tile = 1000
 
 # TODO: remove annotations download
-def jget(url):
-    return json.loads(requests.get(url).content)
 
 annourl="http://bert/v/annotations"
 dsurl="http://bert/v/datasets"
 
 training_slides = set()
 annotations = {}
-boxes = {}
 
-
-print( "collecting annotations ...")
+print("collecting annotations ...")
 
 n_training_cells = 0
 
@@ -68,15 +64,12 @@ for datasetdoc in tqdm(jget(f"{annourl}/trainingdatasets")):
             ttile = f"{dataset}/{slide}/{tile}"
             training_slides.add(ttile)
             annotations[ttile] = []
-            boxes[ttile] = []
             tile_annotations = requests.get(f"{dsurl}/{ttile}/annotations.json").json()
             #if len(tile_annotations) < 5 : continue
             for pos in tile_annotations:
                 if 'purpose' in pos and pos['purpose'] == "validation": continue
                 annotations[ttile].append(pos)
                 n_training_cells += 1
-            #for box in jget(f"{dsurl}/{ttile}/boxes.json"):
-            #    boxes[ttile].append(box)
 
 
 # TODO: extract data loading, making training data and training into separate functions
@@ -107,9 +100,8 @@ for ttile in tqdm(training_slides):
     h = components.shape[0]
     w = components.shape[1]
 
-    #boxes[ttile] = []
 
-    o = training_image( components, boxes[ttile], annotations[ttile], cell_radius )
+    o = training_image( components, annotations[ttile], cell_radius)
 
     known_status = o[:,:,0] != -1
 

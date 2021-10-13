@@ -30,17 +30,12 @@ def phenotype(c):
 
 
 # Rename to sth like extract labels
-def training_image(components, boxes, annotations, cell_radius = 5 ):
+def training_image(components, annotations, cell_radius=5):
     h = components.shape[0]
     w = components.shape[1]
 
     out = np.zeros((h, w, 6), np.float16)
     known_status = np.zeros((h, w), np.uint8)
-
-    for b in boxes:
-        x, y, bw, bh = map(rnd, [b[i] for i in ['x', 'y', 'w', 'h']] )
-        out[y:y+bh, x:x+bw, 0] = -2
-        known_status[y:y+bh, x:x+bw] = 255
 
     cell_at = np.zeros((h, w), np.uint32)
     cell_ph = np.zeros((len(annotations), 5), np.float16)
