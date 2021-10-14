@@ -81,7 +81,7 @@ def model_for_inference(weights=None, window=30):
     return pred_model
 
 
-def model_for_training_2(input_shape=(63, 63, 6)):
+def model_for_training(input_shape=(63, 63, 6)):
     inputs = Input(shape=input_shape)
 
     a = GaussianNoise(stddev=0.1)(inputs)

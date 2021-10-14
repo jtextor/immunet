@@ -18,7 +18,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from utils import extract_labels, rnd
-from models import model_for_training_2
+from models import model_for_training
 from annotations import load_tile_annotations
 
 epochs = 100
@@ -101,7 +101,7 @@ for tile in tqdm(tile_annotations):
 
 print("training on {} examples".format(len(examples)))
 
-Mt = model_for_training_2(input_shape=(2*window+1,2*window+1,6))
+Mt = model_for_training(input_shape=(2*window+1,2*window+1,6))
 
 Mt.compile(optimizer='adam',
             loss= ['mean_squared_error','mean_squared_error'],

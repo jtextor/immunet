@@ -1,10 +1,11 @@
 import json
+import gzip
 from pathlib import Path
 from enum import Enum, unique
 
 DATA_PATH = Path("data")
-ANNOT_TRAIN_FILE = "annotations_train.json"
-ANNOT_VAL_FILE = "annotations_val.json"
+ANNOT_TRAIN_FILE = "annotations_train.json.gz"
+ANNOT_VAL_FILE = "annotations_val.json.gz"
 
 # JSON KEYS
 DATASET_ID_JSON_KEY = "ds_id"
@@ -93,8 +94,8 @@ def load_tile_annotations(type=AnnotationType.training):
         raise ValueError("Unknown annotation type: "+str(type))
     annotations_path = Path("data") / (ANNOT_TRAIN_FILE if type == AnnotationType.training else ANNOT_VAL_FILE)
 
-    with open(annotations_path) as f:
-        annotations = json.load(f)
+    with gzip.open(annotations_path) as f:
+        annotations = json.loads(f.read())
 
     datasets = [Dataset(dataset_dict) for dataset_dict in annotations]
 
