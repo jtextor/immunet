@@ -7,3 +7,4 @@ tensorflow-gpu==1.14.0
 Keras==2.3.1
 csbdeep==0.6.0
 bson==0.5.10
+scikit-image==0.17.2
