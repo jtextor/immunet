@@ -5,6 +5,7 @@ imagecodecs==2020.5.30
 tqdm==4.46.1
 tensorflow-gpu==1.14.0
 Keras==2.3.1
+h5py==2.10.0
 csbdeep==0.6.0
 bson==0.5.10
 scikit-image==0.17.2
