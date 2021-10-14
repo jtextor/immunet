@@ -8,6 +8,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
 import warnings
 warnings.filterwarnings("ignore")
+import tensorflow as tf
 from tensorflow.python.util import deprecation
 deprecation._PRINT_DEPRECATION_WARNINGS = False
 
@@ -21,6 +22,16 @@ from skimage.feature import blob_log
 from skimage import draw
 from pathlib import Path
 
+
+# Extracts the central subregion of a specified size from the image
+def crop_image_center(image, target_size=(512, 512)):
+    h, w, _ = image.shape
+    new_h, new_w = target_size
+    origin_y = h // 2 - (new_h // 2)
+    origin_x = w // 2 - (new_w // 2)
+
+    return image[origin_y:(origin_y + new_h), origin_x:(origin_x + new_w), :]
+
 Mt = model_for_inference("current_best_model.hdf5")
 output_path = Path("demo-output")
 output_path.mkdir(exist_ok=True)
@@ -28,11 +39,17 @@ output_path.mkdir(exist_ok=True)
 # Optional: look at model structure
 # print(Mt.summary())
 
-x = tifffile.imread("tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff",key=range(0,6))
+x = tifffile.imread("tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff", key=range(0,6))
 x = normalize( x )
 x = np.moveaxis( x, 0, -1 )
 
-dist,psi = Mt.predict( np.array([x]) )
+try:
+  dist, psi = Mt.predict( np.array([x]) )
+except tf.errors.ResourceExhaustedError as e:
+  # If the whole sample image is too large to fit into a GPU memory during inference,
+  # take image subregion
+  x = crop_image_center(x)
+  dist, psi = Mt.predict( np.array([x]) )
 
 dist = dist[0,:,:,0]
 psi = psi[0]
