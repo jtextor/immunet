@@ -6,7 +6,7 @@ A SegmentationFree Machine Learning Architecture for Immune Landscape Phenotpyin
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. NoSePh is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. NoSePh identifies cells' positions and phenotypes directly, without the segmentation map of the input image. 
 
-This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset unsed in the paper can be dwnloaded [here](TODO). 
+This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset unsed in the paper can be downloaded [here](TODO). 
 
 ## System requirements 
 
