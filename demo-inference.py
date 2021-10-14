@@ -19,8 +19,11 @@ from csbdeep.utils import normalize
 from PIL import Image
 from skimage.feature import blob_log
 from skimage import draw
+from pathlib import Path
 
 Mt = model_for_inference("current_best_model.hdf5")
+output_path = Path("demo-output")
+output_path.mkdir(exist_ok=True)
 
 # Optional: look at model structure
 # print(Mt.summary())
@@ -44,7 +47,7 @@ a[a>255]=255
 im = a.astype("uint8")
 im = Image.fromarray(im)
 im.type="I"
-im.save("demo-output/cell-center-distance-prediction.png", "PNG")
+im.save(output_path / "cell-center-distance-prediction.png", "PNG")
 
 
 for i in range( psi.shape[2] ):
@@ -55,7 +58,7 @@ for i in range( psi.shape[2] ):
     im = a.astype("uint8")
     im = Image.fromarray(im)
     im.type="I"
-    im.save(f"demo-output/pseudochannel-{i}.png", "PNG")
+    im.save(output_path / f"pseudochannel-{i}.png", "PNG")
 
 # Output 2:
 # Use Laplacian-Of-Gaussian filter to detect cell locations and output 
