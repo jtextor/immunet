@@ -84,8 +84,14 @@ for i in range( psi.shape[2] ):
 cell_locations = [(int(x[0]),int(x[1])) 
         for x in blob_log( dist, min_sigma=3, max_sigma=5, threshold=log_threshold)]
 
+print("{} lymphocytes has been detected".format(len(cell_locations)))
+
+prediction_path = output_path / "prediction.txt"
+
 # Add pseudo-channels for phenotype identification
-for x in cell_locations:
-    rr,cc = draw.circle( x[0], x[1], 2, dist.shape )
-    ph = list(x) + [float(np.mean(psi[rr,cc,j])) for j in range(psi.shape[2])] 
-    print( "\t".join( ["%g" % i for i in ph] ) )
+with open(prediction_path, "w") as f:
+    for x in cell_locations:
+        rr, cc = draw.circle(x[0], x[1], 2, dist.shape)
+        ph = list(x) + [float(np.mean(psi[rr,cc,j])) for j in range(psi.shape[2])]
+        f.write("\t".join(["%g" % i for i in ph] ) + "\n")
+
