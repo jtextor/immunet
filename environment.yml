@@ -1,4 +1,4 @@
-name: noseph
+name: immunet
 channels:
   - defaults
 dependencies:
