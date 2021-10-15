@@ -14,7 +14,7 @@ This repository contains the source code of the model and scripts to run trainin
 
 The model is implemented in Python 3.6.9 and [Tensorflow 1.14.0](https://github.com/tensorflow/docs/tree/r1.14/site/en/api_docs). ImmuNet training and demo inference has been tested on Ubuntu 18.04 on our private server and [Google Colab](https://colab.research.google.com/). We advise using GPU to achieve reasonable running time. 
 
-We used NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and Intel Core i9-9820X @ 3.30GHz CPU (10 cores, 2 threads per core) to train the network and perform inference. The network dicussed in the manuscript was trained on 231851 environments taken from 36856 cells. Training was
+We used NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and Intel Core i9-9820X @ 3.30GHz CPU (10 cores, 2 threads per core) to train the network and perform inference. The network discussed in the manuscript was trained on 231851 environments taken from 36856 cells. Training was
 run for 76 epochs, which took 12 hours on our system.
 
 ## Installation guide
