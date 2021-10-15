@@ -1,4 +1,4 @@
-# NoSePh: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
+# ImmuNet: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
 
 This repository contains the implementation of the model introduced in the following manuscript:
 
@@ -6,13 +6,13 @@ Shabaz Sultan, Mark A. J. Gorris, Lieke van der Woude, Franka Buytenhuijs, Evgen
 A SegmentationFree Machine Learning Architecture for Immune Landscape Phenotpying in Solid Tumors by Multichannel Imaging.   
 biorxiv, 2021, doi: tbc
 
-The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. NoSePh is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the NoSePh architecture, this problem is addressed by inferring cells' positions and phenotypes directly, without the segmentation map of the input image.
+The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the ImmuNet architecture, this problem is addressed by inferring cells' positions and phenotypes directly, without the segmentation map of the input image.
 
 This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset used in the paper will be uploaded to zenodo and we will post the link here.
 
 ## System requirements 
 
-The model is implemented in Python 3.6.9 and [Tensorflow 1.14.0](https://github.com/tensorflow/docs/tree/r1.14/site/en/api_docs). NoSePh training and demo inference has been tested on Ubuntu 18.04 on our private server and [Google Colab](https://colab.research.google.com/). We advise using GPU to achieve reasonable running time. 
+The model is implemented in Python 3.6.9 and [Tensorflow 1.14.0](https://github.com/tensorflow/docs/tree/r1.14/site/en/api_docs). ImmuNet training and demo inference has been tested on Ubuntu 18.04 on our private server and [Google Colab](https://colab.research.google.com/). We advise using GPU to achieve reasonable running time. 
 
 ## Installation guide
 
@@ -20,15 +20,15 @@ We strongly recommend creating a virtual to run the code. The dependencies are s
 ```
 conda env create -f environment.yml
 ```
-An environment named `noseph` will be created. Activate it with:
+An environment named `immunet` will be created. Activate it with:
 ```
-conda activate noseph
+conda activate immunet
 ```
 If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the requirements before creating the environment.
 
 ## Demo
 
-### NoSePh training
+### ImmuNet training
 
 To run the training, please download [the sample of the data](TODO) and place it in the folder with the source code. Then, run:
  ```
