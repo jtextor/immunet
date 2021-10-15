@@ -14,6 +14,9 @@ This repository contains the source code of the model and scripts to run trainin
 
 The model is implemented in Python 3.6.9 and [Tensorflow 1.14.0](https://github.com/tensorflow/docs/tree/r1.14/site/en/api_docs). ImmuNet training and demo inference has been tested on Ubuntu 18.04 on our private server and [Google Colab](https://colab.research.google.com/). We advise using GPU to achieve reasonable running time. 
 
+We used NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and Intel Core i9-9820X @ 3.30GHz CPU (10 cores, 2 threads per core) to train the network and perform inference. The network dicussed in the manuscript was trained on 231851 environments taken from 36856 cells. Training was
+run for 76 epochs, which took 12 hours on our system.
+
 ## Installation guide
 
 We strongly recommend creating a virtual to run the code. The dependencies are specified in the `requirements.txt` file and the conda environment file `environment.yml`. To create a conda environment with `.yml` file, run the following command in a shell:
@@ -30,7 +33,7 @@ If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the require
 
 ### ImmuNet training
 
-To run the training, please download [the sample of the data](TODO) and place it in the folder with the source code. Then, run:
+To run the training, please download the sample of the data (will be uploaded to zenodo) and place it in the folder with the source code. Then, run:
  ```
 python train.py
 ```
@@ -46,7 +49,7 @@ The visualised network output will be saved in the `demo-output` folder as a set
 - `cell-center-distance-prediction.png` - a map of the predicted distance to the nearest cell center.
 - `pseudochannel-{0-4}.png` - maps of the predicted pseudomarkers expression.
 
-The model prediction made based on the network output is printed in logs. Each line corresponds to a detected cell and contains its location and phenotype expression in the format:
+The model prediction made based on the network output is saved in `demo-output/prediction.txt`. Each line corresponds to a detected cell and contains its location and phenotype expression in the format:
 ```
 y x pseudomarker0 pseudomarker1 pseudomarker2 pseudomarker3 pseudomarker4
 ```
