@@ -7,18 +7,18 @@ def rnd(i):
 
 
 def background(c):
-    return c["type"] not in ['T cell', 'B cell', 'Dendritic cell', 'NK cell', 'NKT cell']
+    return c["type"] not in ["T cell", "B cell", "Dendritic cell", "NK cell", "NKT cell"]
 
 
 def phenotyped(c):
-    return (c["type"] in ['No cell', 'Other cell', 'Neural structure', 'Tumor cell', 'B cell']) or ('positivity' in c)
+    return (c["type"] in ["No cell", "Other cell", "Neural structure", "Tumor cell", "B cell"]) or ("positivity" in c)
 
 
 def phenotype(c):
     if c["type"] == "B cell":
         return np.array([0, 0, 1, 0, 0])
     if c["type"] in ["T cell", "Dendritic cell", "NK cell", "NKT cell"]:
-        return (np.array(c['positivity'][1:6]) - 1) / 4.
+        return (np.array(c["positivity"][1:6]) - 1) / 4.
     return np.array([0, 0, 0, 0, 0])
 
 
@@ -35,7 +35,7 @@ def extract_labels(components, annotations, cell_radius=5):
     cell_fg = np.zeros(len(annotations))
 
     for i, a in enumerate(annotations):
-        x, y = map(rnd, [a['x'], a['y']])
+        x, y = map(rnd, [a["x"], a["y"]])
         if x >= w:
             x = w-1
         if y >= h:
@@ -58,22 +58,3 @@ def extract_labels(components, annotations, cell_radius=5):
     out[known_status == 0, 0] = -1
 
     return out
-
-#bu = "http://computational-immunology.org:10000/v"
-
-#annotations=jget(f"{bu}/datasets/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055%2C8734/annotations.json")
-
-#boxes=jget(f"{bu}/datasets/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055%2C8734/boxes.json")
-
-#components = tifffile.imread("components.tiff",key=[0,2,3])
-#components = np.moveaxis(normalize(components),0,-1)
-
-
-#for i in tqdm(range(10)):
-#    out = training_image( components, boxes, annotations )
-
-#oim = out[:,:,[0,1,3]]+3
-
-#im = Image.fromarray((oim*20).astype("uint8"))
-#im.save("o.png")
-

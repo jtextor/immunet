@@ -88,17 +88,17 @@ def generate_data_generator(generator, X, Y, batch_size):
 def run_training(examples, y_total, window, epochs=100, batch_size=64):
     Mt = model_for_training(input_shape=(2 * window + 1, 2 * window + 1, 6))
     
-    Mt.compile(optimizer='adam',
-               loss=['mean_squared_error', 'mean_squared_error'],
+    Mt.compile(optimizer="adam",
+               loss=["mean_squared_error", "mean_squared_error"],
                loss_weights=[1, 20])
     
     datagen = ImageDataGenerator(horizontal_flip=True,
                                  vertical_flip=True,
-                                 fill_mode='reflect',
+                                 fill_mode="reflect",
                                  rotation_range=90)
     
-    checkpoint = ModelCheckpoint("current_best_model.hdf5", monitor='loss', verbose=1,
-                                 save_best_only=True, mode='auto')
+    checkpoint = ModelCheckpoint("current_best_model.hdf5", monitor="loss", verbose=1,
+                                 save_best_only=True, mode="auto")
     
     Mt.fit(generate_data_generator(datagen, examples, y_total, batch_size),
            steps_per_epoch=len(examples) // batch_size,
@@ -106,7 +106,7 @@ def run_training(examples, y_total, window, epochs=100, batch_size=64):
            callbacks=[checkpoint])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Random seed is for extracting pixels from the training data
     np.random.seed(123)
 
