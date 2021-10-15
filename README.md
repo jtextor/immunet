@@ -2,11 +2,13 @@
 
 This repository contains the implementation of the model introduced in the following manuscript:
 
-A SegmentationFree Machine Learning Architecture for Immune Landscape Phenotpying in Solid Tumors by Multichannel Imaging. Shabaz Sultan, Mark A. J. Gorris, Lieke van der Woude, Franka Buytenhuijs, Evgenia Martynova, Sandra van Wilpe, Kiek Verrijp, Carl G. Figdor, I. Jolanda M. de Vries, Johannes Textor TODO; doi: TODO
+Shabaz Sultan, Mark A. J. Gorris, Lieke van der Woude, Franka Buytenhuijs, Evgenia Martynova, Sandra van Wilpe, Kiek Verrijp, Carl G. Figdor, I. Jolanda M. de Vries, Johannes Textor:   
+A SegmentationFree Machine Learning Architecture for Immune Landscape Phenotpying in Solid Tumors by Multichannel Imaging.   
+biorxiv, 2021, doi: tbc
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. NoSePh is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the NoSePh architecture, this problem is addressed by inferring cells' positions and phenotypes directly, without the segmentation map of the input image.
 
-This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset used in the paper can be downloaded [here](TODO). 
+This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset used in the paper will be uploaded to zenodo and we will post the link here.
 
 ## System requirements 
 
@@ -22,7 +24,7 @@ An environment named `noseph` will be created. Activate it with:
 ```
 conda activate noseph
 ```
-If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the requrements before creating the environment.
+If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the requirements before creating the environment.
 
 ## Demo
 
