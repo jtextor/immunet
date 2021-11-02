@@ -41,6 +41,11 @@ Then, uncompress the folder with the data sample, move it to the root folder of 
  ```
 python train.py
 ```
+It is possible to change the number of epochs and paths to the data and annotations with command-line arguments:
+
+`--data_path` - a path to a folder that contains an immunohistochemistry data sample, default: `tilecache`   
+`--annotations_path` - a path to a file that contains annotations, default: `annotations/annotations_train.json.gz`  
+`--epochs` - a number of epochs to run training, default: 100 
 
 ### Demo inference
 
@@ -59,7 +64,10 @@ y x pseudomarker0 pseudomarker1 pseudomarker2 pseudomarker3 pseudomarker4
 ```
 Where (y, x) are cell coordinates and pseudomarker{0-4} are expressions of respective pseudomarkers.
 
-To change the image used for inference demonstration, specify a different path in the `tifffile.imread` call. 
+The paths to a model used for inference and an example image can be changed with the following command-line arguments:
+
+`--model_path` - a path to a model, default: `immunet.h5`   
+`--tile_path` - a path to an image, default: `tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff` 
 
 A patch of immunohistochemistry image we use for demo inference is rather large, which can cause OOM exception on some GPUs. In our code, this exception is handled by cropping the middle subregion of size 512x512 from the input image and running inference for this subregion. If you still get OOM, please decrease the subregion size by changing `target_size` parameter in the `crop_image_center` call.
 
