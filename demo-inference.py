@@ -6,6 +6,7 @@ log_threshold = 0.07
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
+import argparse
 import warnings
 warnings.filterwarnings("ignore")
 import tensorflow as tf
@@ -40,14 +41,30 @@ def save_as_png(image_array, target_path):
 
 
 if __name__ == '__main__':
-    Mt = model_for_inference("immunet.h5")
+
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_path', type=str, default="immunet.h5", required=False,
+                        help="a path to a model to use for demo inference")
+    parser.add_argument('--tile_path',
+                        type=str,
+                        default="tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff",
+                        required=False,
+                        help="a path to an image to use for demo inference")
+
+    args = parser.parse_args()
+
+    model_path = args.model_path
+    tile_path = Path(args.tile_path)
+
     output_path = Path("demo-output")
     output_path.mkdir(exist_ok=True)
 
+    Mt = model_for_inference(model_path)
     # Optional: look at model structure
     # print(Mt.summary())
 
-    x = tifffile.imread("tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff", key=range(0,6))
+    x = tifffile.imread(tile_path, key=range(0,6))
     x = normalize(x)
     x = np.moveaxis(x, 0, -1)
 
