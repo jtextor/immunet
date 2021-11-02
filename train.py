@@ -1,6 +1,7 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="1"
 os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
+import argparse
 import numpy as np
 from tqdm import tqdm
 import tifffile
@@ -22,7 +23,7 @@ from annotations import load_tile_annotations
 
 def make_training_data(tile_annotations,
                        window,
-                       tile_cache_path=Path("tilecache"), 
+                       tile_cache_path,
                        cell_radius=5, 
                        max_examples_per_tile=1000):
     examples = []
@@ -110,16 +111,23 @@ if __name__ == "__main__":
     # Random seed is for extracting pixels from the training data
     np.random.seed(123)
 
-    datasets_to_include = [
-        "2020-01-27-phenotyping-paper-cytoagars",
-        "2020-01-27-phenotyping-paper-tonsils",
-        "2020-01-31-phenotyping-paper-bladder",
-        "2020-01-31-phenotyping-paper-melanoma",
-        "2020-01-31-phenotyping-paper-prostate",
-        "2020-02-12-phenotyping-paper-lung-bcell"]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_path', type=str, default="tilecache", required=False,
+                        help="a path to a folder that contains an immunohistochemistry data sample")
+    parser.add_argument('--annotations_path', type=str, default="annotations/annotations_train.json.gz", required=False,
+                        help="a path to a file that contains annotations")
+    parser.add_argument('--epochs', type=int, default=100, required=False,
+                        help="a number of epochs to run training")
 
-    
-    tile_annotations = load_tile_annotations("training")
+    args = parser.parse_args()
+
+    data_path = Path(args.data_path)
+    annotations_path = Path(args.annotations_path)
+    epochs = args.epochs
+
+    datasets_to_include = ["2020-01-27-phenotyping-paper-cytoagars"]
+
+    tile_annotations = load_tile_annotations(annotations_path)
 
     # Filter out datasets
     if datasets_to_include is not None:
@@ -136,9 +144,9 @@ if __name__ == "__main__":
     print("Making training data ...")
     window = 31
 
-    X, Y = make_training_data(tile_annotations, window)
+    X, Y = make_training_data(tile_annotations, window, data_path)
     print("training on {} examples".format(len(X)))
 
-    run_training(X, Y, window)
+    run_training(X, Y, window, epochs)
 
     
