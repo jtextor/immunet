@@ -4,8 +4,7 @@
 log_threshold = 0.07
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import argparse
 import warnings
 warnings.filterwarnings("ignore")
