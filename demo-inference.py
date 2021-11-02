@@ -40,7 +40,7 @@ def save_as_png(image_array, target_path):
 
 
 if __name__ == '__main__':
-    Mt = model_for_inference("current_best_model.hdf5")
+    Mt = model_for_inference("immunet.h5")
     output_path = Path("demo-output")
     output_path.mkdir(exist_ok=True)
 
