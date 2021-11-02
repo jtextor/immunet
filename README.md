@@ -44,7 +44,7 @@ python train.py
 
 ### Demo inference
 
-Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. Run inference with the command:
+Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. To run inference with the model use in the paper, download `immunet.h5` from [zenodo](https://zenodo.org/record/5638697), place it in the root folder of the repository and run the command:
 ```
 python demo-inference.py
 ```
