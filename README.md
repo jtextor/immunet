@@ -8,7 +8,7 @@ biorxiv, 2021, doi: [10.1101/2021.10.22.464548](https://doi.org/10.1101/2021.10.
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the ImmuNet architecture, this problem is addressed by inferring cells' positions and phenotypes directly, without the segmentation map of the input image.
 
-This repository contains the source code of the model and scripts to run training and demo inference. Annotations used for model training are located in `data/annotations_train.json.gz`. A sample of the immunohistochemistry dataset used in the paper will be uploaded to zenodo and we will post the link here.
+This repository contains the source code of the model and scripts to run training and demo inference. A sample of the immunohistochemistry dataset used in the paper and the corresponding annotations are uploaded to [zenodo](https://zenodo.org/record/5638697) as well as the trained model.
 
 ## System requirements 
 
@@ -33,7 +33,11 @@ If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the require
 
 ### ImmuNet training
 
-To run the training, please download the sample of the data (will be uploaded to zenodo) and place it in the folder with the source code. Then, run:
+To run the training, please download the data sample `tilecache.tar.gz` and annotations `annotations_train.json.gz` from [zenodo](https://zenodo.org/record/5638697). Move `annotations_train.json.gz` to `annotations` folder so that it is relative path was `annotations/annotations_train.json.gz`. If your system automatically uncompressed the file to `annotations_train.json`, compress it with the command:
+ ```
+gzip annotations_train.json
+```
+Then, uncompress the folder with the data sample, move it to the root folder of the repository and run:
  ```
 python train.py
 ```
