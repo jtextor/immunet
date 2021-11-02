@@ -3,7 +3,7 @@ import gzip
 from pathlib import Path
 from enum import Enum, unique
 
-DATA_PATH = Path("data")
+DATA_PATH = Path("annotations")
 ANNOT_TRAIN_FILE = "annotations_train.json.gz"
 ANNOT_VAL_FILE = "annotations_val.json.gz"
 
@@ -92,7 +92,7 @@ class Tile:
 def load_tile_annotations(type=AnnotationType.training):
     if type not in [AnnotationType.training, AnnotationType.validation]:
         raise ValueError("Unknown annotation type: "+str(type))
-    annotations_path = Path("data") / (ANNOT_TRAIN_FILE if type == AnnotationType.training else ANNOT_VAL_FILE)
+    annotations_path = DATA_PATH / (ANNOT_TRAIN_FILE if type == AnnotationType.training else ANNOT_VAL_FILE)
 
     with gzip.open(annotations_path) as f:
         annotations = json.loads(f.read())

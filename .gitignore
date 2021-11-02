@@ -130,3 +130,8 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# Data folders
+annotations/
+tilecache/
+demo-output/
