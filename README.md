@@ -4,7 +4,7 @@ This repository contains the implementation of the model introduced in the follo
 
 Shabaz Sultan, Mark A. J. Gorris, Lieke van der Woude, Franka Buytenhuijs, Evgenia Martynova, Sandra van Wilpe, Kiek Verrijp, Carl G. Figdor, I. Jolanda M. de Vries, Johannes Textor:   
 A SegmentationFree Machine Learning Architecture for Immune Landscape Phenotpying in Solid Tumors by Multichannel Imaging.   
-biorxiv, 2021, doi: tbc
+biorxiv, 2021, doi: [10.1101/2021.10.22.464548](https://doi.org/10.1101/2021.10.22.464548)
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the ImmuNet architecture, this problem is addressed by inferring cells' positions and phenotypes directly, without the segmentation map of the input image.
 
