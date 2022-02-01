@@ -43,11 +43,11 @@ if __name__ == '__main__':
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default="immunet.h5", required=False,
+    parser.add_argument('--model_path', type=str, default="model/immunet.h5", required=False,
                         help="a path to a model to use for demo inference")
     parser.add_argument('--tile_path',
                         type=str,
-                        default="tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff",
+                        default="input/components.tiff",
                         required=False,
                         help="a path to an image to use for demo inference")
 

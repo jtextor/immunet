@@ -18,7 +18,8 @@ We used an NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and a
 
 ## Installation guide
 
-We strongly recommend creating a virtual to run the code. The dependencies are specified in the `requirements.txt` file and the conda environment file `environment.yml`. To create a conda environment with `.yml` file, run the following command in a shell:
+### Virtual environment
+We strongly recommend creating a virtual environment to run the code. The dependencies are specified in the `requirements.txt` file and the conda environment file `environment.yml`. To create a conda environment with `.yml` file, run the following command in a shell:
 ```
 conda env create -f environment.yml
 ```
@@ -27,6 +28,15 @@ An environment named `immunet` will be created. Activate it with:
 conda activate immunet
 ```
 If you do not have a GPU, change `tensorflow-gpu` to `tensorflow` in the requirements before creating the environment.
+
+### Docker image 
+
+Another option is to run ImmuNet in a docker container. We provide a Dockerfile that can be used to build an image:
+```
+docker build -t immunet .
+```
+
+This command will create a lightweight docker image named `immunet` which can be used to run model training and inference separately as well as in a pipeline. The example images and annotations are not copied to the image and should be mounted when running the container together with the output directories.
 
 ## Demo
 
@@ -69,4 +79,57 @@ The paths to a model used for inference and an example image can be changed with
 `--tile_path` - a path to an image, default: `tilecache/2020-01-27-phenotyping-paper-cytoagars/tonsil01/57055,8734/components.tiff` 
 
 A patch of immunohistochemistry image we use for demo inference is rather large, which can cause an OOM exception on some GPUs. In our code, this exception is caught and handled by cropping the middle subregion of size 512x512 from the input image and running inference for this subregion. If you still get OOM, please decrease the subregion size by changing `target_size` parameter in the `crop_image_center` call.
+
+### Training and inference in a docker container
+
+To run model training for images and annotations located at `$DATA_PATH` and `$ANNOTATIONS_PATH` respectively and have the model saved at `$MODEL_PATH`, run the command:
+
+```
+sudo docker run --gpus all --rm -it \
+   --mount type=bind,source=$DATA_PATH,target=/home/user/immunet/tilecache \
+   --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/immunet/annotations \
+   --mount type=bind,source=$MODEL_PATH,target=/home/user/immunet/model \
+   immunet python train.py
+```
+
+After training is finished, the inference can be run as:
+
+```
+sudo docker run --gpus all --rm -it \
+   --mount type=bind,source=$INPUT_PATH,target=/home/user/immunet/input \
+   --mount type=bind,source=$MODEL_PATH,target=/home/user/immunet/model \
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/immunet/demo-output \
+   test_immunet python demo-inference.py
+```
+
+where `$INPUT_PATH` is the path to the folder where the image to run inference for is located, `$MODEL_PATH` is a path where the model is saved and  `$OUTPUT_PATH` a location to save the result.
+
+To run training and inference in a pipeline, execute the following commands:
+
+```
+cmd=$"python train.py
+python demo-inference.py"
+
+docker run --gpus all --rm -it \
+   --mount type=bind,source=$DATA_PATH,target=/home/user/immunet/tilecache \
+   --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/immunet/annotations \
+   --mount type=bind,source=$INPUT_PATH,target=/home/user/immunet/input \
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/immunet/demo-output \
+   immunet bash -c "eval $cmd"
+```
+
+Alternatively, you can use auxiliary scripts located in the `scripts/docker` folder. The scripts assume that all input and output folders are located inside the root repository directory and are named as:
+
+- `tilecache` - folder with images
+- `annotations` - folder with annotations
+- `model` - folder with saved model
+- `input` - folder where a file to run the inference for is located
+- `demo-output` - folder to save the output of demo inference
+
+To run the pipeline with a default local folders use the command:
+```
+scripts/docker/docker_pipeline.sh
+```
+
+Custom folders locations and epochs number can be provided via self-explanatory scripts parameters `--data_path`, `--annotations_path`, `--model_path`, `--input_path`, `--output_path` and `--epochs`.
 

@@ -74,7 +74,7 @@ def model_for_inference(weights=None, window=30):
     pred_model = tf.keras.models.Model(
     inputs=inputs,
     outputs=[x, u])
-
+    
     if weights is not None:
         pred_model.load_weights(weights, by_name=True)
 

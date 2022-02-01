@@ -16,7 +16,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from utils import extract_labels, rnd
-from models import model_for_training
+from models import model_for_training, model_for_inference
 from annotations import load_tile_annotations
 
 
@@ -85,7 +85,7 @@ def generate_data_generator(generator, X, Y, batch_size):
         yield img, [y[:, 0:9], y[:, 9:]]
 
 
-def run_training(examples, y_total, window, epochs=100, batch_size=64):
+def run_training(examples, y_total, window, epochs=100, batch_size=64, model_path=Path("model")):
     Mt = model_for_training(input_shape=(2 * window + 1, 2 * window + 1, 6))
     
     Mt.compile(optimizer="adam",
@@ -96,8 +96,8 @@ def run_training(examples, y_total, window, epochs=100, batch_size=64):
                                  vertical_flip=True,
                                  fill_mode="reflect",
                                  rotation_range=90)
-    
-    checkpoint = ModelCheckpoint("current_best_model.hdf5", monitor="loss", verbose=1,
+   
+    checkpoint = ModelCheckpoint(str(model_path / "current_best_model.hdf5"), monitor="loss", verbose=1,
                                  save_best_only=True, mode="auto")
     
     Mt.fit(generate_data_generator(datagen, examples, y_total, batch_size),
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser.add_argument('--annotations_path', type=str, default="annotations/annotations_train.json.gz", required=False,
                         help="a path to a file that contains annotations")
     parser.add_argument('--epochs', type=int, default=100, required=False,
-                        help="a number of epochs to run training")
+                        help="a number of epochs to run trainimk dirng")
 
     args = parser.parse_args()
 
@@ -145,7 +145,12 @@ if __name__ == "__main__":
 
     X, Y = make_training_data(tile_annotations, window, data_path)
     print("training on {} examples".format(len(X)))
+    
+    model_path = Path("model")
+    model_path.mkdir(exist_ok=True)
+    run_training(X, Y, window, epochs, model_path=model_path)
 
-    run_training(X, Y, window, epochs)
+    # Compress model
+    model_for_inference(weights=str(model_path / "current_best_model.hdf5")).save(str(model_path / "immunet.h5"))
 
     

@@ -135,3 +135,5 @@ dmypy.json
 annotations/
 tilecache/
 demo-output/
+model/
+input/
