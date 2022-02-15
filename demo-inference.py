@@ -3,6 +3,8 @@
 ## configuration parameter: Threshold for Laplacian-Of-Gaussian cell detection
 log_threshold = 0.07
 
+dist_multiplier = 50
+
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import argparse
@@ -80,18 +82,18 @@ if __name__ == '__main__':
 
     # Output 1:
     # Make PNG visualization of distance prediction and all pseudochannels
-    a = 50 * dist
-    a[a < 0] = 0
-    a[a > 255] = 255
+    dist = dist_multiplier * dist
+    dist[dist < 0] = 0
+    dist[dist > 255] = 255
 
-    save_as_png(a, output_path / "cell-center-distance-prediction.png")
+    save_as_png(dist, output_path / "cell-center-distance-prediction.png")
 
     for i in range(psi.shape[2]):
-        a = 255 * psi[:, :, i]
-        a[a < 0] = 0
-        a[a > 255] = 255
+        ch = 255 * psi[:, :, i]
+        ch[ch < 0] = 0
+        ch[ch > 255] = 255
 
-        save_as_png(a, output_path / f"pseudochannel-{i}.png")
+        save_as_png(ch, output_path / f"pseudochannel-{i}.png")
 
     # Output 2:
     # Use Laplacian-Of-Gaussian filter to detect cell locations and output
