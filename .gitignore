@@ -132,8 +132,10 @@ dmypy.json
 .idea/
 
 # Data folders
-annotations/
+data/
 tilecache/
-demo-output/
+demo_evaluation/
+demo_inference/
 model/
+train_output/
 input/
