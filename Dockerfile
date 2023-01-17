@@ -8,8 +8,7 @@ RUN pip3 install -r requirements.txt
 
 # Create working directory
 RUN mkdir -p /home/user/immunet
-WORKDIR /home/user/immunet
+WORKDIR /home/user/
 
 # Copy code
-COPY *.py /home/user/immunet/
-
+COPY immunet/*.py /home/user/immunet/

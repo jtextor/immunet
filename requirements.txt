@@ -9,3 +9,7 @@ h5py==2.10.0
 csbdeep==0.6.0
 bson==0.5.10
 scikit-image==0.17.2
+scikit-learn==0.24.2
+pandas==1.1.5
+tifffile==2020.9.3
+pandas==1.1.5

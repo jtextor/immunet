@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 WORKDIR="$(pwd)"
-DATA_PATH=$WORKDIR/tilecache
-ANNOTATIONS_PATH=$WORKDIR/annotations
+IMAGE_PATH=$WORKDIR/tilecache
+DATA_PATH=$WORKDIR/data
+MODEL_PATH=$WORKDIR/train_output
+OUTPUT_PATH=$WORKDIR/demo_evaluation
 EPOCHS=100
-INPUT_PATH=$WORKDIR/input
-OUTPUT_PATH=$WORKDIR/demo-output
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -43,12 +43,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 cmd=$"python train.py --epochs $EPOCHS
-python demo-inference.py"
+python evaluation.py match
+python evaluation.py run"
 
-# Run training
-docker run --gpus all --rm -it \
-   --mount type=bind,source=$DATA_PATH,target=/home/user/immunet/tilecache \
-   --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/immunet/annotations \
-   --mount type=bind,source=$INPUT_PATH,target=/home/user/immunet/input \
-   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/immunet/demo-output \
+sudo docker run --gpus all --rm -it \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$DATA_PATH,target=/home/user/data \
+   --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_evaluation \
    immunet bash -c "eval $cmd"

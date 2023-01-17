@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 WORKDIR="$(pwd)"
-DATA_PATH=$WORKDIR/tilecache
-ANNOTATIONS_PATH=$WORKDIR/annotations
-MODEL_PATH=$WORKDIR/model
+IMAGE_PATH=$WORKDIR/tilecache
+ANNOTATIONS_PATH=$WORKDIR/data/annotations
+OUTPUT_PATH=$WORKDIR/train_output
 EPOCHS=100
 
 while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    -dp|--data_path)
-      DATA_PATH="$2"
+    -dp|--IMAGE_PATH)
+      IMAGE_PATH="$2"
       shift # past argument
       shift # past value
       ;;
@@ -20,8 +20,8 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -mp|--model_path)
-      MODEL_PATH="$2"
+    -mp|--OUTPUT_PATH)
+      OUTPUT_PATH="$2"
       shift # past argument
       shift # past value
       ;;
@@ -38,7 +38,7 @@ done
 
 
 docker run --gpus all --rm -it \
-   --mount type=bind,source=$DATA_PATH,target=/home/user/immunet/tilecache \
-   --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/immunet/annotations \
-   --mount type=bind,source=$MODEL_PATH,target=/home/user/immunet/model \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/data/annotations \
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/train_output \
    immunet python train.py --epochs $EPOCHS
