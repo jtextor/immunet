@@ -216,90 +216,89 @@ if __name__ == "__main__":
         type=str,
         default="../data/annotations/annotations_train.json.gz",
         required=False,
-        help="a path to a json file with training annotations",
+        help="a path to a json file with training annotations"
     )
     parser.add_argument(
         "--val_ann_path",
         type=str,
-        default="../data/annotations/annotations_val.json.gz",
         required=False,
-        help="a path to a json file with validation annotations",
+        help="a path to a json file with validation annotations"
     )
     parser.add_argument(
         "--images_path",
         type=str,
         default="../tilecache",
         required=False,
-        help="a path to a folder with images",
+        help="a path to a folder with images"
     )
     parser.add_argument(
         "--output_path",
         type=str,
         default="../train_output",
         required=False,
-        help="a path to save output",
+        help="a path to save output"
     )
     parser.add_argument(
         "--in_channels_num",
         type=int,
         default=7,
         required=False,
-        help="a number of mIHC image channels to use",
+        help="a number of mIHC image channels to use"
     )
     parser.add_argument(
         "--out_markers_num",
         type=int,
         default=5,
         required=False,
-        help="a number of phenotype markers to predict",
+        help="a number of phenotype markers to predict"
     )
     parser.add_argument(
         "--cell_radius",
         type=int,
         default=5,
         required=False,
-        help="a cell radius in pixels to use for labels generation",
+        help="a cell radius in pixels to use for labels generation"
     )
     parser.add_argument(
         "--epochs",
         type=int,
         default=100,
         required=False,
-        help="a number of epochs to run training",
+        help="a number of epochs to run training"
     )
     parser.add_argument(
         "--batch_size",
         type=int,
         default=64,
         required=False,
-        help="a batch size to use during training",
+        help="a batch size to use during training"
     )
     parser.add_argument(
         "--max_patch",
         type=int,
         default=1000,
         required=False,
-        help="maximum number of patches to extract from tile",
+        help="maximum number of patches to extract from tile"
     )
     parser.add_argument(
         "--model_cp_name",
         type=str,
         default="model_cp",
         required=False,
-        help="a file name to save model checkpoint",
+        help="a file name to save model checkpoint"
     )
     parser.add_argument(
         "--history_name",
         type=str,
         default="train_history",
         required=False,
-        help="a file name to save training history",
+        help="a file name to save training history"
     )
     parser.add_argument(
         "--weights_path",
         type=str,
         required=False,
-        help="a path to a model to use to resume training",
+        help="a path to a model to use to resume training"
     )
 
     args = parser.parse_args()

@@ -10,7 +10,7 @@ while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    -dp|--IMAGE_PATH)
+    -ip|--image_path)
       IMAGE_PATH="$2"
       shift # past argument
       shift # past value
@@ -20,7 +20,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -mp|--OUTPUT_PATH)
+    -op|--output_path)
       OUTPUT_PATH="$2"
       shift # past argument
       shift # past value

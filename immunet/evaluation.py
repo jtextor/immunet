@@ -18,6 +18,8 @@ from config import *
 def match_cells(annotations_path,
                 model_path,
                 log_threshold,
+                min_log_std,
+                max_log_std,
                 suffix=None,
                 images_path=Path("../tilecache"),
                 output_path=Path("../data/prediction")):
@@ -43,7 +45,7 @@ def match_cells(annotations_path,
         for tile in tqdm(tiles):
             tile_path = tile.build_path(images_path)
             # get prediction
-            prediction = find_cells(tile_path, model, log_threshold)
+            prediction = find_cells(tile_path, model, log_threshold, min_log_std, max_log_std)
 
             # If no cells is predicted
             if len(prediction) == 0:
@@ -85,11 +87,25 @@ def match(argv):
         help="a path to a model to use for prediction",
     )
     parser.add_argument(
-        "--th",
+        "--log_th",
         type=float,
         required=False,
         default=0.07,
         help="a threshold for a blob detection algorithm",
+    )
+    parser.add_argument(
+        "--min_log_std",
+        type=float,
+        default=3,
+        required=False,
+        help="the minimum standard deviation for Gaussian kernel of LoG, decrease to detect smaller cells",
+    )
+    parser.add_argument(
+        "--max_log_std",
+        type=float,
+        default=5,
+        required=False,
+        help="the maximum standard deviation for Gaussian kernel of LoG, increase to detect larger cells",
     )
     parser.add_argument(
         "--s",
@@ -115,12 +131,14 @@ def match(argv):
     args = parser.parse_args(argv)
     annotations_path = Path(args.ann_path)
     model_path = Path(args.model_path)
-    threshold = args.th
+    log_th = args.log_th
+    min_log_std = args.min_log_std
+    max_log_std = args.max_log_std
     suffix = args.s
     images_path = Path(args.images_path)
     output_path = Path(args.output_path)
 
-    match_cells(annotations_path, model_path, threshold, suffix, images_path, output_path)
+    match_cells(annotations_path, model_path, log_th, min_log_std, max_log_std, suffix, images_path, output_path)
 
 
 def plot_confusion_matrix(y_true, y_pred, output_path, level="main_types", label=None):

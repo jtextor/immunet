@@ -10,8 +10,13 @@ while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-    -ip|--input_path)
-      INPUT_PATH="$2"
+    -ip|--image_path)
+      IMAGE_PATH="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -dp|--data_path)
+      DATA_PATH="$2"
       shift # past argument
       shift # past value
       ;;

@@ -163,7 +163,7 @@ def demo(argv):
         type=float,
         default=0.07,
         required=False,
-        help="a threshold for LoG blob detection algoritm",
+        help="a threshold for LoG blob detection algorithm",
     )
     parser.add_argument(
         "--min_log_std",
