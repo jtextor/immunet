@@ -221,6 +221,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--val_ann_path",
         type=str,
+        default="../data/annotations/annotations_val.json.gz",
         required=False,
         help="a path to a json file with validation annotations",
     )
