@@ -1,5 +1,4 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import sys
 import argparse
 import tensorflow as tf
@@ -210,6 +209,3 @@ if __name__ == "__main__":
         print("Usage: " + "/".join(actions.keys()) + " ...")
     else:
         action(sys.argv[2:])
-
-
-   
