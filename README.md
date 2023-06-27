@@ -8,7 +8,7 @@ biorxiv, 2021, doi: [10.1101/2021.10.22.464548](https://doi.org/10.1101/2021.10.
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the ImmuNet architecture, this problem is addressed by inferring the positions and phenotyppes of immune cells directly, without using segmentation as an intermediate step.
 
-This repository contains the source code of the model, scripts to train the model and to perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/record/8084976)
+This repository contains the source code of the model, scripts to train the model and to perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/record/8084976).
 
 ## System requirements 
 
