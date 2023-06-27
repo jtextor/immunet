@@ -8,7 +8,7 @@ biorxiv, 2021, doi: [10.1101/2021.10.22.464548](https://doi.org/10.1101/2021.10.
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. In the ImmuNet architecture, this problem is addressed by inferring the positions and phenotyppes of immune cells directly, without using segmentation as an intermediate step.
 
-This repository contains the source code of the model, scripts to train the model and to perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/record/5638697)
+This repository contains the source code of the model, scripts to train the model and to perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/record/8084976)
 
 ## System requirements 
 
@@ -42,7 +42,7 @@ This command will create a lightweight docker image named `immunet` which can be
 
 ### ImmuNet training
 
-To run the training, please download the data sample `tilecache.tar.gz` and annotations `annotations_train.json.gz` from [zenodo](https://zenodo.org/record/5638697). Move `annotations_train.json.gz` to `data/annotations` folder. Then, uncompress the folder with the data sample, move it to the root folder of the repository and run:
+To run the training, please download the data sample `tilecache.tar.gz` and annotations `annotations_train.json.gz` from [zenodo](https://zenodo.org/record/8084976). Move `annotations_train.json.gz` to `data/annotations` folder. Then, uncompress the folder with the data sample, move it to the root folder of the repository and run:
  ```
 python immunet/train.py
 ```
@@ -53,7 +53,7 @@ It is possible to change the number of epochs, paths to the data and annotations
 
 ### Demo inference
 
-Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. To run inference with the model used in the paper, download `immunet.h5` from [zenodo](https://zenodo.org/record/5638697) and place it in the `train_output`. Then, select any `components.tiff` from `tilecache`, make an `input` folder inside the root folder of the repository and put it there. Run the command:
+Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. To run inference with the model used in the paper, download `immunet.h5` from [zenodo](https://zenodo.org/record/8084976) and place it in the `train_output`. Then, select any `components.tiff` from `tilecache`, make an `input` folder inside the root folder of the repository and put it there. Run the command:
 ```
 python immunet/inference.py demo
 ```
