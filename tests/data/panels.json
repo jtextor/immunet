@@ -1,0 +1,39 @@
+[
+  {
+    "panel": "no_background",
+    "markers": ["CD3", "FOXP3", "CD20", "CD45RO", "CD8"],
+    "phenotypes": [
+      {"type": "T cell", "subtype": "Thelp", "phenotype": {"CD3": true, "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Treg", "phenotype": {"CD3": "*", "FOXP3": true, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Tcyt", "phenotype": {"CD3": "*", "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": true}},
+      {"type": "T cell", "subtype": "Tmemory", "phenotype": {"CD3": false, "FOXP3": false, "CD20": false, "CD45RO": true, "CD8": false}},
+      {"type": "B cell", "phenotype": {"CD3": false, "FOXP3": false, "CD20": true, "CD45RO": false, "CD8": false}}
+    ]
+  },
+  {
+    "panel": "background",
+    "markers": ["CD3", "FOXP3", "CD20", "CD45RO", "CD8"],
+    "phenotypes": [
+      {"type": "T cell", "subtype": "Thelp", "phenotype": {"CD3": true, "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Treg", "phenotype": {"CD3": "*", "FOXP3": true, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Tcyt", "phenotype": {"CD3": "*", "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": true}},
+      {"type": "T cell", "subtype": "Tmemory", "phenotype": {"CD3": false, "FOXP3": false, "CD20": false, "CD45RO": true, "CD8": false}},
+      {"type": "B cell", "phenotype": {"CD3": false, "FOXP3": false, "CD20": true, "CD45RO": false, "CD8": false}},
+      {"type":  "Tumor cell", "background":  true},
+      {"type": "No cell", "background": true},
+      {"type": "Other cell", "background": true}
+    ]
+  },
+  {
+    "panel": "tc_dc",
+    "markers": ["CD3", "FOXP3", "CD8", "CD20", "BDCA2", "XCR1"],
+    "phenotypes": [
+      {"type": "T cell", "subtype": "Thelp", "phenotype": {"CD3": true, "FOXP3": false, "CD8": false, "CD20": false, "BDCA2": false, "XCR1": false}},
+      {"type": "T cell", "subtype": "Treg", "phenotype": {"CD3": "*", "FOXP3": true, "CD8": false, "CD20": false, "BDCA2": false, "XCR1": false}},
+      {"type": "T cell", "subtype": "Tcyt", "phenotype": {"CD3": "*", "FOXP3": false, "CD8": true, "CD20": false, "BDCA2": false, "XCR1": false}},
+      {"type": "Dendritic cell", "subtype": "pDC", "phenotype": {"CD3": false, "FOXP3": false, "CD8": false, "CD20": false, "BDCA2": true, "XCR1": false}},
+      {"type": "Dendritic cell", "subtype": "cDC1", "phenotype": {"CD3": false, "FOXP3": false, "CD8": false, "CD20": false, "BDCA2": false, "XCR1": true}},
+      {"type": "B cell", "phenotype": {"CD3": false, "FOXP3": false, "CD8": false, "CD20": true, "BDCA2": false, "XCR1": false}}
+    ]
+  }
+]

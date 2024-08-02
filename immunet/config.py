@@ -1,4 +1,11 @@
-# CONSTANTS USED IN DIFFERENT MODULES
+import configparser
+
+config = configparser.ConfigParser()
+config.read('../config.ini')
+
+panel_file = config["evaluation"]["panels"]
+
+#CONSTANTS USED IN DIFFERENT MODULES
 # ANNOTATIONS JSON KEYS
 DATASET_KEY = "ds"
 SLIDE_KEY = "slide"

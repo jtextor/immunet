@@ -7,11 +7,11 @@ from tqdm import tqdm
 import argparse
 from scipy.spatial import cKDTree
 from annotations import load_annotations
-from panels import panels
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import pandas as pd
 from inference import find_cells
 from models import model_for_inference
+from panels import load_panels
 from config import *
 
 
@@ -234,6 +234,7 @@ def pred_pheno_from_string(pheno_str):
 
 def evaluate(
     prediction_path,
+    panels,
     output_path=Path("../demo_evaluation"),
     activation_th=0.4,
     detection_radius=3.5,
@@ -269,24 +270,24 @@ def evaluate(
         panel = panels[panel_id]
         ann_type = row[ANN_TYPE_COL]
         ann_pheno = ann_pheno_from_string(row[ANN_PHENO_COL])
-        return panel.cell_from_annotation(ann_type, ann_pheno)
+        return panel.annotation_phenotype(ann_type, ann_pheno)
 
     def foreground(row):
         panel_id = row[PANEL_COL]
         panel = panels[panel_id]
         ann_type = row[ANN_TYPE_COL]
-        return ann_type in panel.fg_cell_types
+        return ann_type in panel.foreground_types
 
     def predicted_type(row):
         panel_id = row[PANEL_COL]
         panel = panels[panel_id]
         pred_pheno = pred_pheno_from_string(row[PRED_PHENO_COL])
-        return panel.cell_from_prediction(pred_pheno, activation_th)
+        return panel.prediction_phenotype(pred_pheno, activation_th)
 
     def hit_bg(row):
         panel_id = row[PANEL_COL]
         panel = panels[panel_id]
-        return not row[DETECTED_COL] or row[PRED_TYPE_COL] in panel.bg_cell_types
+        return not row[DETECTED_COL] or row[PRED_TYPE_COL] in panel.background_types
 
     def hit_main(row):
         fg_ann = row[FG_KEY]
@@ -308,7 +309,7 @@ def evaluate(
     prediction_df = pd.read_csv(prediction_path, sep="\t", index_col=False)
 
     # Find and filter out invalid annotations
-    prediction_df[INVALID_COL] = prediction_df.apply(lambda x: ann_subtype(x).is_invalid, axis=1)
+    prediction_df[INVALID_COL] = prediction_df.apply(lambda x: ann_subtype(x).invalid, axis=1)
     # Invalid annotations warning
     invalid_ann_df = prediction_df[prediction_df[INVALID_COL] == True]
     for _, row in invalid_ann_df.iterrows():
@@ -322,9 +323,9 @@ def evaluate(
     # Add columns for evaluation
     prediction_df[DETECTED_COL] = prediction_df.apply(lambda x: x[DISTANCE_COL] < detection_radius * pix_pmm, axis=1)
     prediction_df[FG_KEY] = prediction_df.apply(lambda x: foreground(x), axis=1)
-    prediction_df[ANN_SUBTYPE_COL] = prediction_df.apply(lambda x: ann_subtype(x).desc if x[FG_KEY] else x[ANN_TYPE_COL], axis=1)
-    prediction_df[PRED_TYPE_COL] = prediction_df.apply(lambda x: predicted_type(x).main_type, axis=1)
-    prediction_df[PRED_SUBTYPE_COL] = prediction_df.apply(lambda x: predicted_type(x).desc, axis=1)
+    prediction_df[ANN_SUBTYPE_COL] = prediction_df.apply(lambda x: ann_subtype(x).detailed if x[FG_KEY] else x[ANN_TYPE_COL], axis=1)
+    prediction_df[PRED_TYPE_COL] = prediction_df.apply(lambda x: predicted_type(x).main, axis=1)
+    prediction_df[PRED_SUBTYPE_COL] = prediction_df.apply(lambda x: predicted_type(x).detailed, axis=1)
     prediction_df[HIT_MAIN_COL] = prediction_df.apply(lambda x: hit_main(x), axis=1)
     prediction_df[HIT_SUBTYPE_COL] = prediction_df.apply(lambda x: hit_subtype(x), axis=1)
     # A tweak to correctly calculate CM for background annotation. Since a hit means that nothing is predicted in
@@ -415,8 +416,9 @@ def evaluate_arg(argv):
     detection_radius = args.radius
     pix_pmm = args.pix_pmm
     label = args.label
+    panels = load_panels()
 
-    evaluate(prediction_path, output_path, marker_th, detection_radius, pix_pmm, label)
+    evaluate(prediction_path, panels, output_path, marker_th, detection_radius, pix_pmm, label)
 
 
 if __name__ == "__main__":

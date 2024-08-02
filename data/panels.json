@@ -1,0 +1,25 @@
+[
+  {
+    "panel": "lymphocyte",
+    "markers": ["CD3", "FOXP3", "CD20", "CD45RO", "CD8"],
+    "phenotypes": [
+      {"type": "T cell", "subtype": "Thelp", "phenotype": {"CD3": true, "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Treg", "phenotype": {"CD3": "*", "FOXP3": true, "CD20": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Tcyt", "phenotype": {"CD3": "*", "FOXP3": false, "CD20": false, "CD45RO": "*", "CD8": true}},
+      {"type": "T cell", "subtype": "Tmemory", "phenotype": {"CD3": false, "FOXP3": false, "CD20": false, "CD45RO": true, "CD8": false}},
+      {"type": "B cell", "phenotype": {"CD3": false, "FOXP3": false, "CD20": true, "CD45RO": false, "CD8": false}},
+      {"type": "Tumor cell", "background": true}
+    ]
+  },
+  {
+    "panel": "lymphocyte_nk_ro",
+    "markers": ["CD3", "FOXP3", "CD56", "CD45RO", "CD8"],
+    "phenotypes": [
+      {"type": "T cell", "subtype": "Thelp", "phenotype": {"CD3": true, "FOXP3": false, "CD56": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Treg", "phenotype": {"CD3": "*", "FOXP3": true, "CD56": false, "CD45RO": "*", "CD8": false}},
+      {"type": "T cell", "subtype": "Tcyt", "phenotype": {"CD3": "*", "FOXP3": false, "CD56": false, "CD45RO": "*", "CD8": true}},
+      {"type": "T cell", "subtype": "Tmemory", "phenotype": {"CD3": false, "FOXP3": false, "CD56": false, "CD45RO": true, "CD8": false}},
+      {"type": "Tumor cell", "background": true}
+    ]
+  }
+]
