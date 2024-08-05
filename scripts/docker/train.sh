@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 WORKDIR="$(pwd)"
-IMAGE_PATH=$WORKDIR/tilecache
+IMAGE_PATH=$WORKDIR/data/tilecache
 ANNOTATIONS_PATH=$WORKDIR/data/annotations
 OUTPUT_PATH=$WORKDIR/train_output
 EPOCHS=100
@@ -38,7 +38,7 @@ done
 
 
 docker run --gpus all --rm -it \
-   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/data/tilecache \
    --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/data/annotations \
    --mount type=bind,source=$OUTPUT_PATH,target=/home/user/train_output \
-   immunet python train.py --epochs $EPOCHS
+   immunet python immunet/train.py --epochs $EPOCHS

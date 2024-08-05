@@ -1,12 +1,15 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../immunet")
 import json
 import unittest
 from unittest import TestCase
 from pathlib import Path
-from immunet.panels import SpecialPhenotypes, MarkerExpression, AnnotationType, Phenotype, Panel
+from panels import SpecialPhenotypes, MarkerExpression, AnnotationType, Phenotype, Panel
 
 
 def get_test_panel_dics():
-    test_panels_fp = Path("data/panels.json")
+    test_panels_fp = Path("tests/data/panels.json")
 
     with open(test_panels_fp) as f:
         panel_dicts = json.load(f)

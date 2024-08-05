@@ -67,7 +67,7 @@ class Tile:
 
         return "/".join((self.dataset_id, self.slide_id, self.id))
 
-    def build_path(self, relative_path, file_name="components.tiff"):
+    def build_path(self, relative_path, file_name=INPUT_IMAGE):
         if self.dataset_id is None or self.slide_id is None:
             return None
 

@@ -21,8 +21,8 @@ def match_cells(annotations_path,
                 min_log_std,
                 max_log_std,
                 suffix=None,
-                images_path=Path("../tilecache"),
-                output_path=Path("../data/prediction")):
+                image_path=IMAGES_FOLDER,
+                output_path=PREDICTION_FOLDER):
     # Matches annotations with predictions and saves the results to a file
     output_path.mkdir(exist_ok=True)
     model = model_for_inference(weights=str(model_path))
@@ -31,42 +31,46 @@ def match_cells(annotations_path,
 
     # for each tile get predictions and compare with annotations as below
     if suffix is None:
-        prediction_path = output_path / "prediction.tsv"
+        prediction_path = output_path / PREDICTION_FILE
     else:
-        prediction_path = output_path / "prediction-{}.tsv".format(suffix)
+        prediction_path = output_path / PREDICTION_FILE_S.format(suffix)
+        
+    # Do not run inference if has been done before
+    if not prediction_path.is_file():
+        with open(prediction_path, "w+") as f:
+            # Write TSV columns
+            columns = [PANEL_COL, DATASET_COL, SLIDE_COL, TILE_COL, ID_COL, ANN_TYPE_COL, ANN_PHENO_COL, PRED_PHENO_COL, DISTANCE_COL]
+            f.write("\t".join(columns))
+            f.write("\n")
 
-    with open(prediction_path, "w+") as f:
-        # Write TSV columns
-        columns = [PANEL_COL, DATASET_COL, SLIDE_COL, TILE_COL, ID_COL, ANN_TYPE_COL, ANN_PHENO_COL, PRED_PHENO_COL, DISTANCE_COL]
-        f.write("\t".join(columns))
-        f.write("\n")
+            # Write predictions matched to annotations
+            for tile in tqdm(tiles):
+                tile_path = tile.build_path(image_path)
+                # get prediction
+                prediction = find_cells(tile_path, model, log_threshold, min_log_std, max_log_std)
 
-        # Write predictions matched to annotations
-        for tile in tqdm(tiles):
-            tile_path = tile.build_path(images_path)
-            # get prediction
-            prediction = find_cells(tile_path, model, log_threshold, min_log_std, max_log_std)
+                # If no cells is predicted
+                if len(prediction) == 0:
+                    prediction = [[[-100000, -100000], [0] * out_markers_num]]
 
-            # If no cells is predicted
-            if len(prediction) == 0:
-                prediction = [[[-100000, -100000], [0] * out_markers_num]]
+                tr = cKDTree(np.array([cell[0] for cell in prediction]))
+                panel = tile.panel
+                dataset = tile.dataset_id
+                slide = tile.slide_id
+                tile_id = tile.id
+                annotations = tile.annotations
+                for annotation in annotations:
+                    f.write("\t".join((panel, dataset, slide, tile_id, annotation[ID_KEY], annotation[TYPE_KEY])))
+                    f.write("\t")
+                    positivity = annotation[PHENO_KEY][:out_markers_num]
+                    f.write(",".join(["%g" % i for i in positivity]))
+                    f.write("\t")
+                    nn = tr.query([annotation[Y_KEY], annotation[X_KEY]])
+                    f.write(",".join(["%.2f" % i for i in prediction[nn[1]][1]]))
+                    f.write("\t%.1f\n" % (nn[0]))
+                    f.flush()
 
-            tr = cKDTree(np.array([cell[0] for cell in prediction]))
-            panel = tile.panel
-            dataset = tile.dataset_id
-            slide = tile.slide_id
-            tile_id = tile.id
-            annotations = tile.annotations
-            for annotation in annotations:
-                f.write("\t".join((panel, dataset, slide, tile_id, annotation[ID_KEY], annotation[TYPE_KEY])))
-                f.write("\t")
-                positivity = annotation[PHENO_KEY][:out_markers_num]
-                f.write(",".join(["%g" % i for i in positivity]))
-                f.write("\t")
-                nn = tr.query([annotation[Y_KEY], annotation[X_KEY]])
-                f.write(",".join(["%.2f" % i for i in prediction[nn[1]][1]]))
-                f.write("\t%.1f\n" % (nn[0]))
-                f.flush()
+    return prediction_path
 
 
 def match(argv):
@@ -75,13 +79,13 @@ def match(argv):
     parser.add_argument(
         "--ann_path",
         type=str,
-        default="../data/annotations/annotations_val.json.gz",
+        default=str(VAL_ANNOTATONS_PATH),
         required=False,
         help="a path to annotations file"
     )
     parser.add_argument(
         "--model_path",
-        default="../train_output/immunet.h5",
+        default=str(MODEL_PATH),
         type=str,
         required=False,
         help="a path to a model to use for prediction",
@@ -114,16 +118,16 @@ def match(argv):
         help="a suffix for a file name to save the results",
     )
     parser.add_argument(
-        "--images_path",
+        "--image_path",
         type=str,
-        default="../tilecache",
+        default=str(IMAGES_FOLDER),
         required=False,
         help="a path to a folder with images",
     )
     parser.add_argument(
         "--output_path",
         type=str,
-        default="../data/prediction",
+        default=str(PREDICTION_FOLDER),
         required=False,
         help="a path to save evaluation results",
     )
@@ -135,10 +139,10 @@ def match(argv):
     min_log_std = args.min_log_std
     max_log_std = args.max_log_std
     suffix = args.s
-    images_path = Path(args.images_path)
+    image_path = Path(args.image_path)
     output_path = Path(args.output_path)
 
-    match_cells(annotations_path, model_path, log_th, min_log_std, max_log_std, suffix, images_path, output_path)
+    match_cells(annotations_path, model_path, log_th, min_log_std, max_log_std, suffix, image_path, output_path)
 
 
 def plot_confusion_matrix(y_true, y_pred, output_path, level="main_types", label=None):
@@ -235,7 +239,7 @@ def pred_pheno_from_string(pheno_str):
 def evaluate(
     prediction_path,
     panels,
-    output_path=Path("../demo_evaluation"),
+    output_path=EVALUATION_PATH,
     activation_th=0.4,
     detection_radius=3.5,
     pix_pmm=2,
@@ -370,7 +374,7 @@ def evaluate_arg(argv):
     parser.add_argument(
         "--prediction_path",
         type=str,
-        default="../data/prediction/prediction.tsv",
+        default=str(PREDICTION_FILE_PATH),
         required=False,
         help="a path to a file with matched pipeline prediction"
     )
@@ -378,7 +382,7 @@ def evaluate_arg(argv):
         "--output_path",
         type=str,
         required=False,
-        default="../demo_evaluation",
+        default=str(EVALUATION_PATH),
         help="a path to save the evaluation results",
     )
     parser.add_argument(
@@ -421,9 +425,140 @@ def evaluate_arg(argv):
     evaluate(prediction_path, panels, output_path, marker_th, detection_radius, pix_pmm, label)
 
 
+def run(annotations_path,
+        model_path,
+        panels,
+        image_path=IMAGES_FOLDER,
+        prediction_path=PREDICTION_FOLDER,
+        output_path=EVALUATION_PATH,
+        log_threshold=0.07,
+        min_log_std=3,
+        max_log_std=5,
+        suffix=None,
+        activation_th=0.4,
+        detection_radius=3.5,
+        pix_pmm=2,
+        label=None):
+
+    prediction_file_path = match_cells(annotations_path, model_path, log_threshold, min_log_std, max_log_std, suffix, image_path, prediction_path)
+    evaluate(prediction_file_path, panels, output_path, activation_th, detection_radius, pix_pmm, label)
+
+
+def run_args(argv):
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--ann_path",
+        type=str,
+        default=str(VAL_ANNOTATONS_PATH),
+        required=False,
+        help="a path to annotations file"
+    )
+    parser.add_argument(
+        "--model_path",
+        default=str(MODEL_PATH),
+        type=str,
+        required=False,
+        help="a path to a model to use for prediction",
+    )
+    parser.add_argument(
+        "--image_path",
+        type=str,
+        default=str(IMAGES_FOLDER),
+        required=False,
+        help="a path to a folder with images",
+    )
+    parser.add_argument(
+        "--prediction_path",
+        type=str,
+        default=str(PREDICTION_FOLDER),
+        required=False,
+        help="a path to save evaluation results",
+    )
+    parser.add_argument(
+        "--output_path",
+        type=str,
+        required=False,
+        default=str(EVALUATION_PATH),
+        help="a path to save the evaluation results",
+    )
+    parser.add_argument(
+        "--log_th",
+        type=float,
+        required=False,
+        default=0.07,
+        help="a threshold for a blob detection algorithm",
+    )
+    parser.add_argument(
+        "--min_log_std",
+        type=float,
+        default=3,
+        required=False,
+        help="the minimum standard deviation for Gaussian kernel of LoG, decrease to detect smaller cells",
+    )
+    parser.add_argument(
+        "--max_log_std",
+        type=float,
+        default=5,
+        required=False,
+        help="the maximum standard deviation for Gaussian kernel of LoG, increase to detect larger cells",
+    )
+    parser.add_argument(
+        "--s",
+        type=str,
+        required=False,
+        help="a suffix for a file name to save the results",
+    )
+    parser.add_argument(
+        "--marker_th",
+        type=float,
+        required=False,
+        default=0.4,
+        help="a threshold for marker expression",
+    )
+    parser.add_argument(
+        "--radius",
+        type=float,
+        required=False,
+        default=3.5,
+        help="a detection radius to use in micrometers",
+    )
+    parser.add_argument(
+        "--pix_pmm",
+        type=float,
+        required=False,
+        default=2.0,
+        help="number of pixels per mm",
+    )
+    parser.add_argument(
+        "--label",
+        type=str,
+        required=False,
+        help="a label to add to evaluation results. E.g. to specify that data are from training or validation set"
+    )
+
+    args = parser.parse_args(argv)
+    annotations_path = Path(args.ann_path)
+    model_path = Path(args.model_path)
+    image_path = Path(args.image_path)
+    prediction_path = Path(args.prediction_path)
+    output_path = Path(args.output_path)
+    log_th = args.log_th
+    min_log_std = args.min_log_std
+    max_log_std = args.max_log_std
+    suffix = args.s
+    marker_th = args.marker_th
+    detection_radius = args.radius
+    pix_pmm = args.pix_pmm
+    label = args.label
+    panels = load_panels()
+
+    run(annotations_path, model_path, panels, image_path, prediction_path, output_path, log_th, min_log_std, max_log_std, suffix, marker_th, detection_radius, pix_pmm, label)
+
+
 if __name__ == "__main__":
     # Very first argument determines action
-    actions = {"match": match, "run": evaluate_arg}
+    actions = {"match": match, "evaluate": evaluate_arg, "run": run_args}
 
     try:
         action = actions[sys.argv[1]]

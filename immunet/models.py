@@ -1,4 +1,3 @@
-import os
 import sys
 import argparse
 import tensorflow as tf
@@ -6,7 +5,7 @@ from tensorflow.keras.layers import Input, GaussianNoise, Conv2D, BatchNormaliza
     Lambda, Add, Dropout, Flatten
 from tensorflow import pad
 from tensorflow.nn import pool
-
+from config import *
 
 def model_for_training(input_shape=(63, 63, 7), out_markers_num=5):
     inputs = Input(shape=input_shape)
@@ -180,14 +179,14 @@ def compress(argv):
     parser.add_argument(
         "--input",
         type=str,
-        default="model_cp",
+        default=MODEL_CP_NAME,
         required=False,
         help="a file name of the model to compress without extension",
     )
     parser.add_argument(
         "--output",
         type=str,
-        default="model",
+        default=MODEL_FINAL_NAME,
         required=False,
         help="a file name to save the compressed model without extension",
     )

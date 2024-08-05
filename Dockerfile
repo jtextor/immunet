@@ -12,3 +12,10 @@ WORKDIR /home/user/
 
 # Copy code
 COPY immunet/*.py /home/user/immunet/
+
+# Copy config file 
+COPY config.ini /home/user/
+
+# Copy panels file 
+RUN mkdir -p /home/user/data
+COPY data/panels.json /home/user/data

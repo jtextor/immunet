@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 WORKDIR="$(pwd)"
-INPUT_PATH=$WORKDIR/input
+INPUT_PATH=$WORKDIR/demo_input
 MODEL_PATH=$WORKDIR/train_output
 OUTPUT_PATH=$WORKDIR/demo_inference
 
@@ -32,7 +32,7 @@ done
 
 
 docker run --gpus all --rm -it \
-   --mount type=bind,source=$INPUT_PATH,target=/home/user/input \
+   --mount type=bind,source=$INPUT_PATH,target=/home/user/demo_input \
    --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
    --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_inference \
-   immunet python inference.py demo
+   immunet python immunet/inference.py demo

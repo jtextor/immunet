@@ -13,8 +13,7 @@ from skimage.feature import blob_log
 from skimage import draw
 import argparse
 from PIL import Image
-from pathlib import Path
-from models import model_for_inference
+from config import *
 
 # The colors used for the prediction visualisation
 # Change according to the number of channels in your panel and preferred colors
@@ -183,19 +182,19 @@ def demo(argv):
     parser.add_argument(
         '--tile_path',
         type=str,
-        default="../input/components.tiff",
+        default=str(INPUT_IMAGE_PATH),
         required=False,
         help="a path to an image to use for demo inference")
     parser.add_argument(
         '--model_path',
         type=str,
-        default="../train_output/immunet.h5",
+        default=str(MODEL_PATH),
         required=False,
         help="a path to a model to use for demo inference")
     parser.add_argument(
         '--output_path',
         type=str,
-        default="../demo_inference",
+        default=str(INFERENCE_PATH),
         required=False,
         help="a path to save output of demo inference")
     parser.add_argument(

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 WORKDIR="$(pwd)"
-IMAGE_PATH=$WORKDIR/tilecache
+IMAGE_PATH=$WORKDIR/data/tilecache
 DATA_PATH=$WORKDIR/data
 MODEL_PATH=$WORKDIR/train_output
-OUTPUT_PATH=$WORKDIR/demo_evaluation
+OUTPUT_PATH=$WORKDIR/evaluation
 EPOCHS=100
 
 while [[ $# -gt 0 ]]; do
@@ -42,12 +42,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-cmd=$"python train.py --epochs $EPOCHS
-python evaluation.py match
-python evaluation.py run"
+cmd=$"python immunet/train.py --epochs $EPOCHS
+python immunet/evaluation.py run"
 
 sudo docker run --gpus all --rm -it \
-   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/data/tilecache \
    --mount type=bind,source=$DATA_PATH,target=/home/user/data \
    --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
    --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_evaluation \

@@ -70,7 +70,7 @@ def extract_labels(components, annotations, out_markers_num=5, cell_radius=5):
 
 def make_samples(
     tile_annotations,
-    images_path,
+    image_path,
     window,
     max_examples_per_tile,
     in_channels_num,
@@ -86,7 +86,7 @@ def make_samples(
         if len(tile.annotations) == 0:
             continue
 
-        tile_path = tile.build_path(images_path)
+        tile_path = tile.build_path(image_path)
 
         if not tile_path.is_file():
             print("\t cannot find cached TIFF for {} ...".format(str(tile_path)))

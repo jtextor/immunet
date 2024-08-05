@@ -2,7 +2,7 @@ from enum import Enum, unique
 import numpy as np
 import json
 from typing import List
-from immunet.config import panel_file
+from config import PANEL_FILE
 from pathlib import Path
 
 
@@ -266,10 +266,9 @@ class Panel:
         return self.__phenotype_for_binary_expression(binarised_prediction, self.phenotypes)
 
 
-def load_panels():
+def load_panels(relative_path = Path(PANEL_FILE)):
     panels = {}
 
-    relative_path = Path("../") / panel_file
     with open(relative_path) as f:
         panel_dicts = json.load(f)
 

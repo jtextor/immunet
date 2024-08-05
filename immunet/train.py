@@ -1,7 +1,6 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import numpy as np
-from pathlib import Path
 import matplotlib.pyplot as plt
 import argparse
 import json
@@ -14,9 +13,10 @@ deprecation._PRINT_DEPRECATION_WARNINGS = False
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-from prepare_data import make_samples
+from data_processing import make_samples
 from models import model_for_training, compress_model
 from annotations import load_annotations
+from config import *
 
 
 def plot_train_history(losses, val_losses=None, file_name="history"):
@@ -64,14 +64,13 @@ def make_data_generator(generator, X, Y, batch_size):
         for j in range(img.shape[0]):
             # for each channel
             for k in range(img[j].shape[2]):
-                # TODO: explain what this transformation is about?
                 img[j, :, :, k] = img[j, :, :, k] * np.random.uniform(0.6, 2) + np.random.uniform(-0.2, 0.2)
         # Return modified image and y split into distances and phenotype labels
         yield img, [y[:, 0:9], y[:, 9:]]
 
 
 def process_annotations(annotations,
-                        images_path,
+                        image_path,
                         max_examples_per_tile,
                         in_channels_num,
                         out_channels_num,
@@ -80,7 +79,7 @@ def process_annotations(annotations,
                         batch_size):
     (patches, labels) = make_samples(
         annotations,
-        images_path,
+        image_path,
         window,
         max_examples_per_tile,
         in_channels_num,
@@ -107,7 +106,7 @@ def process_annotations(annotations,
 def run_training(
     train_annotations_path,
     val_annotations_path,
-    images_path,
+    image_path,
     in_channels_num,
     out_markers_num,
     cell_radius,
@@ -134,7 +133,7 @@ def run_training(
 
     train_data_gen, train_steps = process_annotations(
         train_annotations,
-        images_path,
+        image_path,
         max_examples_per_tile,
         in_channels_num,
         out_markers_num,
@@ -155,7 +154,7 @@ def run_training(
 
         val_data_gen, val_steps = process_annotations(
             val_annotations,
-            images_path,
+            image_path,
             max_examples_per_tile,
             in_channels_num,
             out_markers_num,
@@ -213,7 +212,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--train_ann_path",
         type=str,
-        default="../data/annotations/annotations_train.json.gz",
+        default=str(TRAIN_ANNOTATONS_PATH),
         required=False,
         help="a path to a json file with training annotations"
     )
@@ -224,16 +223,16 @@ if __name__ == "__main__":
         help="a path to a json file with validation annotations"
     )
     parser.add_argument(
-        "--images_path",
+        "--image_path",
         type=str,
-        default="../tilecache",
+        default=str(IMAGES_FOLDER),
         required=False,
         help="a path to a folder with images"
     )
     parser.add_argument(
         "--output_path",
         type=str,
-        default="../train_output",
+        default=str(TRAIN_OUTPUT_PATH),
         required=False,
         help="a path to save output"
     )
@@ -282,7 +281,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_cp_name",
         type=str,
-        default="model_cp",
+        default=MODEL_CP_NAME,
         required=False,
         help="a file name to save model checkpoint"
     )
@@ -305,7 +304,7 @@ if __name__ == "__main__":
     val_annotations_path = (
         Path(args.val_ann_path) if args.val_ann_path is not None else None
     )
-    images_path = Path(args.images_path)
+    image_path = Path(args.image_path)
     train_output = Path(args.output_path)
     if not train_output.is_dir():
         train_output.mkdir()
@@ -323,7 +322,7 @@ if __name__ == "__main__":
     run_training(
         train_annotations_path,
         val_annotations_path,
-        images_path,
+        image_path,
         in_channels_num,
         out_markers_num,
         cell_radius,
@@ -336,4 +335,4 @@ if __name__ == "__main__":
     )
 
     # Compress model and save compressed model under the same name as model checkpoint
-    compress_model(model_cp_name, train_output / "immunet")
+    compress_model(model_cp_name, train_output / MODEL_FINAL_NAME)
