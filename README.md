@@ -1,4 +1,4 @@
-# ImmuNet: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
+ ma# ImmuNet: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
 
 This repository contains the implementation of the machine learning model introduced in the following manuscript:
 
@@ -14,7 +14,7 @@ This repository contains the source code of the model, scripts to train the mode
 
 The model is implemented in Python 3.6.9 and [Tensorflow 1.14.0](https://github.com/tensorflow/docs/tree/r1.14/site/en/api_docs). ImmuNet training and demo inference has been tested on Ubuntu 18.04 and 20.04 on our own server and on [Google Colab](https://colab.research.google.com/). We advise using the GPU mode to achieve reasonable training and inference times. 
 
-We used an NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and an Intel Core i9-9820X @ 3.30GHz CPU (10 cores, 2 threads per core) to train the network and perform inference. The network discussed in the manuscript was trained on 183678 environments (i.e., 63x63x7 input images) taken from 27888 cells. Training was run for 100 epochs, which took ~12 hours on our system.
+We used an NVIDIA GeForce RTX 2080 Ti GPU (RAM: 11 GB, CUDA Version: 11.0) and an Intel Core i9-9820X @ 3.30GHz CPU (10 cores, 2 threads per core) to train the network and perform inference. The network discussed in the manuscript was trained on 183,678 patches of size 63x63x7 taken from 27,888 cell annotations. Training was run for 100 epochs, which took ~12 hours on our system.
 
 ## Installation guide
 
@@ -36,24 +36,34 @@ Another option is to run ImmuNet in a docker container. We provide a Dockerfile 
 docker build -t immunet .
 ```
 
-This command will create a lightweight docker image named `immunet` which can be used to run model training, inference and evaluation separately as well as in a pipeline. The example images and annotations are not copied to the image and should be mounted when running the container together with the output directories.
+This command will create a lightweight docker image named `immunet` which can be used to run model training, inference and evaluation separately as well as in a pipeline. The example images and annotations are not copied to the image and should be mounted when running the container as well as the output directories.
 
 ## Demo
 
+All commands provided below are assumed to be executed from the root folder of the repository.
+
 ### ImmuNet training
 
-To run the training, please download the data sample `tilecache.tar.gz` and annotations `annotations_train.json.gz` from [zenodo](https://zenodo.org/record/8084976). Move `annotations_train.json.gz` to `data/annotations` folder. Then, uncompress the folder with the data sample, move it to the root folder of the repository and run:
+To run the training, please download the data sample `tilecache.tar.gz` and annotations `annotations_train.json.gz` from [zenodo](https://zenodo.org/record/8084976). Move `annotations_train.json.gz` to `data/annotations` folder. Then, uncompress the folder with the data sample, move it to the `data` folder. The expected file hierarchy is:
+```
+- data
+   - annotations
+      - annotations_train.json.gz
+   - tilecache
+```
+
+Now, model training can simply be perfromed with the command:
  ```
 python immunet/train.py
 ```
 
 The files created during training will be saved in a `train_output` filder. They include the model checkpoint, the final comressed model in `.h5` format and the loss history per epoch.  
 
-It is possible to change the number of epochs, paths to the data and annotations, and some hyperparameters with command-line arguments. See the `main` block for the full overview of arguments. 
+It is possible to change the number of epochs, paths to the data and annotations, and some hyperparameters with command-line arguments. See the `main` block of `train.py` for the full overview of arguments. 
 
 ### Demo inference
 
-Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. To run inference with the model used in the paper, download `immunet.h5` from [zenodo](https://zenodo.org/record/8084976) and place it in the `train_output`. Then, select any `components.tiff` from `tilecache`, make an `input` folder inside the root folder of the repository and put it there. Run the command:
+Inference of cells' positions and phenotypes is demonstrated for a single immunohistochemistry image. To run inference with the model used in the paper, download `immunet.h5` from [zenodo](https://zenodo.org/record/8084976) and place it in the `train_output`. Then, select any `components.tiff` from `tilecache`, make a `demo_input` folder inside the root folder of the repository and put it there. Run the command:
 ```
 python immunet/inference.py demo
 ```
@@ -66,37 +76,46 @@ A patch of immunohistochemistry image we use for demo inference is rather large,
 
 ### Evaluation
 
-It is also possible to evaluate a model on a set of annotations. The file with annotations of interest should be placed in `data/annotations/` folder, TIFF files for all tiles that occur in a file with annotations should be in the `tilecache` folder and the model should be in the `train_output` folder. 
+A model can be evaluated on a set of annotations as well. The file with annotations of interest should be placed in the `data/annotations/` folder, TIFF files for all tiles that occur in a file with annotations should be in the `tilecache` folder and the model should be in the `train_output` folder. 
 
-The evaluation is performed in 2 steps:
+The evaluation is performed in 2 steps that can be run separately or with a single command after each other:
 
 1. Matching model prediction and annotations
 2. Calculation of error rate by phenotype based on the results of matching (as in figure 3E in the paper). In addition at this step the list of errors and confusion matrix are generated.
+
+#### Complete evaluation
+
+Run
+
+```
+python immunet/evaluation.py run
+```
+This command 1) performs inference for all tiles with annotations, 2) match cell predictions and annoatations, 3) computes simple performance metrics and statistics, i.e. accuracy per annotation type and confusion matrix. The output is described in more details in the two next sectons.
 
 #### Matching
 
 Run
 
 ```
-python evaluation.py match
+python immunet/evaluation.py match
 ```
 A .tsv file with matched annotations and model prediction will be saved in the `data/prediction` folder. If you want to evaluate the model on a few different sets of annotations, you can use `--s` command-line argument to add a suffix to a name of a .tsv file. For instance:
 
 ```
-python evaluation.py match --s train
+python immunet/evaluation.py match --s train
 ```
 
 Paths and hyperparameters can be changed with other command-line arguments, see the `match` function.
 
 #### Performance evaluation
 
-A .tsv file obtained at the previous step is the only input needed for evaluation. Run
+A .tsv file obtained at the previous step and a file that describes markers and phenotypes of a panel (see below) are the required inputs. Run
 
 ```
-python evaluation.py run
+python immunet/evaluation.py run
 ```
 
-The output of the evaluation will be saved in the `demo_evaluation` folder. It includes:
+The output of the evaluation will be saved in the `evaluation` folder. It includes:
 
 - .csv files with error rates for cell types defined in a panel: 2 separate files for main cell types and subtypes
 - Confusion matrices for main cell types and subtypes
@@ -110,61 +129,59 @@ To run model training for `$EPOCHS` epochs, for images and annotations located a
 
 ```
 sudo docker run --gpus all --rm -it \
-   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/data/tilecache \
    --mount type=bind,source=$ANNOTATIONS_PATH,target=/home/user/data/annotations \
    --mount type=bind,source=$OUTPUT_PATH,target=/home/user/train_output \
-   immunet python train.py --epochs $EPOCHS
+   immunet python immunet/train.py --epochs $EPOCHS
 ```
 
 After training is finished, the inference can be run as:
 
 ```
 sudo docker run --gpus all --rm -it \
-   --mount type=bind,source=$INPUT_PATH,target=/home/user/input \
+   --mount type=bind,source=$INPUT_PATH,target=/home/user/demo_input \
    --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
    --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_inference \
-   immunet python inference.py demo
+   immunet python immunet/inference.py demo
 ```
 
 where `$INPUT_PATH` is the path to the folder where the image to run inference for is located, `$MODEL_PATH` is a path where the model is saved and  `$OUTPUT_PATH` a location to save the result.
 
-Evaluation can be run with the commands:
+Evaluation can be run with the command:
 ```
-cmd=$"python evaluation.py match
-python evaluation.py run"
-
 sudo docker run --gpus all --rm -it \
-   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/data/tilecache \
    --mount type=bind,source=$DATA_PATH,target=/home/user/data \
    --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
-   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_evaluation \
-   immunet bash -c "eval $cmd"
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/evaluation \
+   immunet python immunet/evaluation.py run
 ```
 
 Finally, to run training and evaluation in a pipeline, execute the following commands:
 
 ```
-cmd=$"python train.py --epochs $EPOCHS
-python evaluation.py match
-python evaluation.py run"
+cmd=$"python immunet/train.py --epochs $EPOCHS
+python immunet/evaluation.py run"
 
 sudo docker run --gpus all --rm -it \
-   --mount type=bind,source=$IMAGE_PATH,target=/home/user/tilecache \
+   --mount type=bind,source=$IMAGE_PATH,target=/home/user/data/tilecache \
    --mount type=bind,source=$DATA_PATH,target=/home/user/data \
    --mount type=bind,source=$MODEL_PATH,target=/home/user/train_output \
-   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/demo_evaluation \
+   --mount type=bind,source=$OUTPUT_PATH,target=/home/user/evaluation \
    immunet bash -c "eval $cmd"
 ```
 
 Alternatively, you can use auxiliary scripts located in the `scripts/docker` folder. The scripts assume that all input and output folders are located inside the root repository directory and are named as:
 
-- `tilecache` - folder with images
-- `data/annotations` - folder with annotations
-- `data/prediction` - folder to save the matched annotations and prediction
-- `train_output` - folder to save a model and training history
-- `input` - folder where a file to run the inference for is located
-- `demo_inference` - folder to save the output of demo inference
-- `demo_evaluation` - folder to save the output of demo evaluation
+- config.ini - a config file that specifies a path to the file that describes panels
+- `data/tilecache` - a folder with images
+- `data/annotations` - a folder with annotations
+- `data/prediction` - a folder to save the matched annotations and prediction
+- `data/panels.json` - a json file that describes a panel
+- `train_output` - a folder to save a model and training history
+- `demo_input` - a folder where a file to run the inference for is located
+- `demo_inference` - a folder to save the output of demo inference
+- `evaluation` - a folder to save the output of demo evaluation
 
 To run the pipeline with a default local folders use the command:
 ```
@@ -200,7 +217,7 @@ The folder hierarchy for the whole dataset is
 
 ```
 
-Annotations should be saved in a JSON fitle with the following structure:
+Annotations should be saved in a JSON file with the following structure:
 ```
 [ 
    {
@@ -240,9 +257,9 @@ Annotations should be saved in a JSON fitle with the following structure:
 ]
 ```
 
-The values of `ds`, `slide` and `tile` attributes should match the corresponding folders where the images are stored. `panel` attribute of the `ds` object identifies the panel used for a dataset and is needed at the evaluation step. Its value should match the id of a panel defined in `panels.py` that is needed to be used for phenotyping (see below).  
+The values of `ds`, `slide` and `tile` attributes should match the corresponding folders where the images are stored. `panel` attribute of the `ds` object identifies the panel used for a dataset and is needed at the evaluation step. Its value should match the id of a panel described in `data/panels.json` that defines phenotyping (see below).  
 
-Each annotation object should have its coordinates on a tile, id, annotation type and positivity according to the panel. Backgrond annotations (i.e. those places on the images where a lymphocyte should not be detected) should have an attribute `"background": true`. See the paper for details. `positivity` attribute contains an array of the Likert scale positivities for each channel used for phenotyping in the order the channels appear in TIFF files. For instance, in a panel used in the paper, TIFF files have the following channels: 
+Each annotation object should have its coordinates on a tile, id, annotation type and positivity according to the panel. Background annotations (i.e. those places on the images where a lymphocyte should not be detected) should have the attribute `"background": true`. See the paper for details. The `positivity` attribute contains an array of the Likert scale positivities for each channel used for phenotyping in the order the channels appear in TIFF files. For instance, in a panel used in the paper, TIFF files have the following channels: 
 
 DAPI, CD3, FOXP3, CD20, CD45RO, CD8, Tumor marker, Autofluorescence
 
@@ -270,7 +287,11 @@ At the performance evaluation step:
 `--radius` - a detection radius to use in micrometers (see fig. 3B)
 `--pix_pmm` - number of pixels per micro meter
 
-But **most importantly** you need to add definitions specific to your panel to the `panels.py` file. It includes cell types and implementation of a class for your panel where you define logic for phenotyping. The panel class should inherit from an abstract class `Panel` and implement its abstract methods. See `LymPanel` and `LymNkRoPanel` classes of panels used in the paper to get an idea of how to implement a class for your own panel. Then, your custom class instance should be added to the `panels` dictionary at the bottom of the file. The correct panel id should be specified in a json with annotations at the dataset level, e.g `"panel": "lymphocyte"`. See the provided annotation files.
+### Definiton of panles in panel.json
+
+We provide a user-friendly way to define custom panels with the JSON representation contained in the `data/panels.json` file. The file should contatin a list of dictionaries that define a panel. A key `panel` specifies a panel id, a key `markers` should provide an array of cellular markers and a key `phenotypes` defines the phenotypes. See the file in the repository for an example.
+
+The panel definition used during the model evaluation. It is parsed and applied by the `panels.py` module and is extensively covered with unit tests.
 
 ### Inference for the whole dataset
 
