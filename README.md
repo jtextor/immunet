@@ -1,4 +1,4 @@
- ma# ImmuNet: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
+ # ImmuNet: a Segmentation-Free Machine Architecture Pipeline for Lymphocyte Phenotyping
 
 This repository contains the implementation of the machine learning model introduced in the following manuscript:
 
