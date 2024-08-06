@@ -1,13 +1,8 @@
-import configparser
 from pathlib import Path
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-PANEL_FILE = config["evaluation"]["panels"]
 
 # Default paths
 DATA_FOLDER = Path("data")
+PANEL_FILE = DATA_FOLDER / "panels.json"
 ANNOTATIONS_FOLDER = DATA_FOLDER / "annotations"
 PREDICTION_FOLDER = DATA_FOLDER / "prediction"
 IMAGES_FOLDER = DATA_FOLDER / "tilecache"

@@ -266,7 +266,7 @@ class Panel:
         return self.__phenotype_for_binary_expression(binarised_prediction, self.phenotypes)
 
 
-def load_panels(relative_path = Path(PANEL_FILE)):
+def load_panels(relative_path=Path(PANEL_FILE)):
     panels = {}
 
     with open(relative_path) as f:
@@ -277,3 +277,7 @@ def load_panels(relative_path = Path(PANEL_FILE)):
         panels[panel.name] = panel
 
     return panels
+
+
+a = load_panels()
+print(a)
