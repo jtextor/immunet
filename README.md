@@ -286,7 +286,7 @@ At the performance evaluation step:
 `--radius` - a detection radius to use in micrometers (see fig. 3B)
 `--pix_pmm` - number of pixels per micro meter
 
-### Definiton of panels in panel.json
+### Definition of panels in panel.json
 
 We provide a user-friendly way to define custom panels with the JSON representation contained in the `data/panels.json` file. It is possible to describe multiple panels as a list of dictionaries that define a panel. Custom panels can simply be added to the `data/panels.json`. A dictionary representing a panel should have three attributes: `panel` specifies a panel id, `markers` provides a list of cellular markers used in a panel, and `phenotypes` is a list of dictionaries that describe phenotypes defined by the cellular markers. With these conventions, the JSON that defines the panel used in the paper is the following:
 
