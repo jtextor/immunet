@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-#conda env create -f ../environment.yml
+conda env create -f ../environment.yml
 
 CONDA_BASE=$(conda info --base)
 source $CONDA_BASE/etc/profile.d/conda.sh
 
-conda activate immunet_dev
+conda activate immunet
 
 python data_split.py --stage bladder
 python data_split.py --stage lung

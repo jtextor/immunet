@@ -480,22 +480,28 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     stage = Stage(args.stage)
-    
+
     seed = 99
     random.seed(seed)
     np.random.seed(seed)
 
     if stage == Stage.bladder:
+        print("Splitting bladder dataset..")
         split_bladder(annotations_file)
     elif stage == Stage.lung:
+        print("Splitting lung dataset..")
         split_lung(annotations_file)
     elif stage == Stage.melanoma:
+        print("Splitting melanoma dataset..")
         split_melanoma(annotations_file)
     elif stage == Stage.prostate:
+        print("Splitting prostate dataset..")
         split_prostate(annotations_file)
     elif stage == Stage.tonsils:
+        print("Splitting tonsils dataset..")
         split_tonsils(annotations_file)
     elif stage == Stage.makeSplit:
+        print("Merging splits..")
         merge_split_by_tissue(split_path)
 
         # Make final training / validation annotation split
