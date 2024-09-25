@@ -277,7 +277,3 @@ def load_panels(relative_path=Path(PANEL_FILE)):
         panels[panel.name] = panel
 
     return panels
-
-
-a = load_panels()
-print(a)

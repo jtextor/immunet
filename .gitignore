@@ -140,3 +140,4 @@ demo_inference/
 demo_input/
 model/
 train_output/
+paper/data/
