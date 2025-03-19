@@ -3,12 +3,12 @@
 This repository contains the implementation of the machine learning model introduced in the following manuscript:
 
 Shabaz Sultan, Mark A. J. Gorris, Evgenia Martynova, Lieke van der Woude, Franka Buytenhuijs, Sandra van Wilpe, Kiek Verrijp, Carl G. Figdor, I. Jolanda M. de Vries, Johannes Textor:   
-ImmuNet: A Segmentation-Free Machine Learning Pipeline for Immune Landscape Phenotyping in Tumors by Muliplex Imaging.   
-biorxiv, 2021, doi: [10.1101/2021.10.22.464548](https://doi.org/10.1101/2021.10.22.464548)
+ImmuNet: A Segmentation-Free Machine Learning Pipeline for Immune Landscape Phenotyping in Tumors by Multiplex Imaging.   
+Biology Methods and Protocols, 2025, doi: [https://doi.org/10.1101/2021.10.22.464548](https://doi.org/10.1093/biomethods/bpae094)
 
 The proposed model enables automated detection and phenotyping of immune cells in multiplex immunohistochemistry data. ImmuNet is designed to be applied in dense tissue environments such as solid tumors, where segmentation-based phenotyping can be inaccurate due to segmentation errors or overlapping cell boundaries. The ImmuNet architecture addresses this problem by inferring immune cell positions and phenotypes directly, without using segmentation as an intermediate step.
 
-This repository contains the source code of the model and scripts to train the model and perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/record/8084976).
+This repository contains the source code of the model and scripts to train the model and perform inference and evaluation. A subset of the immunohistochemistry images used to train and evaluate the model, the corresponding annotations, and the final trained model can be downloaded from [zenodo](https://zenodo.org/records/15046015).
 
 ## System requirements 
 
